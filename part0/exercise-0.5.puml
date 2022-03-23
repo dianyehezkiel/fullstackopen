@@ -1,0 +1,22 @@
+@startuml /exampleapp/spa diagram
+skinparam sequenceMessageAlign center
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+Browser<--Server: Send HTML-code
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Browser<--Server: Send main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+Browser<--Server: Send spa.js
+
+note over Browser
+Browser executing spa.js
+that requests JSON data from server 
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Browser<--Server: Send data.json
+
+note over Browser
+Browser executes the event handler
+that renders data.json to display
+end note
+@enduml

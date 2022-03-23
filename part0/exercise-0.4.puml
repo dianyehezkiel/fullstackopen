@@ -1,0 +1,26 @@
+@startuml /new_note diagram
+skinparam sequenceMessageAlign center
+actor User
+User->Browser: Input note into input form and submit
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+Browser<--Server: Response with HTTP status code 302 redirect to /exampleapp/notes
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Browser<--Server: Send HTML-code
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Browser<--Server: Send main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Browser<--Server: Send main.js
+
+note over Browser
+Browser executing main.js
+that requests JSON data from server 
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Browser<--Server: Send data.json
+
+note over Browser
+Browser executes the event handler
+that renders data.json to display
+end note
+@enduml

@@ -1,0 +1,13 @@
+@startuml /new_note_spa diagram
+skinparam sequenceMessageAlign center
+actor User
+User->Browser: Input note into input form and submit
+
+note over Browser
+Browser executing form.onSubmit in spa.js
+that empty input form, render newly created 
+note into display, and send new note to Server
+end note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+@enduml
