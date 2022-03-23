@@ -10,3 +10,32 @@ content-type: application/json
     "name": "sample",
     "number": "021-23456789"
 }
+
+###
+// Test post request with same name
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Sample",
+    "number": "021-23456789"
+}
+
+###
+// Test post request with missing name
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "number": "021-23456789"
+}
+
+###
+// Test post request with missing number
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "number": " "
+}
