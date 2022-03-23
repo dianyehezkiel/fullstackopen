@@ -1,2 +1,12 @@
 // Test delete request
 DELETE http://localhost:3001/api/persons/1
+
+###
+// Test post request
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "number": "021-23456789"
+}
