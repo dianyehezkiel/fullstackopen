@@ -10,6 +10,7 @@ const morganCustom = morgan(':method :url :status :res[content-length] - :respon
 app.use(express.json())
 app.use(morganCustom)
 app.use(cors())
+app.use(express.static('build'))
 
 let persons = [
   { 
