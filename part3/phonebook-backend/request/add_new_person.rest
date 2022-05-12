@@ -73,7 +73,7 @@ POST http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample",
+    "name": "sample7",
     "number": "123-123"
 }
 
@@ -83,6 +83,6 @@ POST http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample",
+    "name": "sample8",
     "number": "123-123-123"
 }
