@@ -1,5 +1,5 @@
 // Successful Update
-PUT http://localhost:3001/api/persons/627d243f9ef6215cc6f60674
+PUT http://localhost:3001/api/persons/<id>
 content-type: application/json
 
 {
@@ -9,7 +9,7 @@ content-type: application/json
 
 ###
 //Failed Update
-PUT http://localhost:3001/api/persons/627d243f9ef6215cc6f60674
+PUT http://localhost:3001/api/persons/<id>
 content-type: application/json
 
 {
