@@ -1,7 +1,18 @@
-PUT http://localhost:3001/api/persons/<id>
+// Successful Update
+PUT http://localhost:3001/api/persons/627d243f9ef6215cc6f60674
 content-type: application/json
 
 {
     "name": "sample",
+    "number": "123456789"
+}
+
+###
+//Failed Update
+PUT http://localhost:3001/api/persons/627d243f9ef6215cc6f60674
+content-type: application/json
+
+{
+    "name": "NN",
     "number": "123456789"
 }
