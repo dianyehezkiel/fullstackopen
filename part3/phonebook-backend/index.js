@@ -111,16 +111,33 @@ app.post('/api/persons', (request, response, next) => {
     return response.status(400).json({error: "number is missing"})
   }
 
-  const person = new Person({
-    name: name,
-    number: number
-  })
+  Person.where({name:{'$regex' : `^${name.toLowerCase()}$`, '$options' : 'i'}})
+    .findOne((error, person) => {
+      try {
+        if(error) {
+          throw error
+        }
 
-  person.save()
-    .then((savedPerson) => {
-      response.status(201).json(savedPerson)
-    })
-    .catch(error => next(error))
+        if(!person) {
+          const person = new Person({
+            name: name,
+            number: number
+          })
+        
+          person.save()
+            .then((savedPerson) => {
+              response.status(201).json(savedPerson)
+            })
+            .catch(error => next(error))
+        } else {
+          return response.status(400).json({error: "name must be unique"})
+        }
+      } catch(error) {
+        console.log(error.message)
+        response.status(500).end()
+      }
+    }
+  )
 })
 
 const errorHandler = (error, request, response, next) => {

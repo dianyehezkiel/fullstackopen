@@ -47,6 +47,15 @@ const App = () => {
             }, 5000);
             setPersons(persons.map(person => person.id !== personExist.id ? person : returnedPerson))
           })
+          .catch(error => {
+            console.log(error.response.data);
+            setNotifType('error');
+            setNotifMessage(error.response.data.error);
+            setTimeout(() => {
+              setNotifType('')
+              setNotifMessage(null)
+            }, 5000);
+          });
 
         return 1;
       } else {
