@@ -8,6 +8,16 @@ content-type: application/json
 }
 
 ###
+// Successful Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample2",
+    "number": "0123456789"
+}
+
+###
 // Failed Post
 POST http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
@@ -15,4 +25,64 @@ content-type: application/json
 {
     "name": "NN",
     "number": "021-23456789"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample3",
+    "number": "0211-23456789"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample4",
+    "number": "1-23456789"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample5",
+    "number": "1234512"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample6",
+    "number": "123451aa"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "number": "123-123"
+}
+
+###
+// Failed Post
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "number": "123-123-123"
 }
