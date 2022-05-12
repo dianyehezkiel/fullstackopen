@@ -1,133 +1,128 @@
-require('dotenv').config()
-const express =  require('express')
-const app = express()
-const morgan = require('morgan')
-const cors = require('cors')
-const Person = require('./models/person')
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const Person = require('./models/person');
 
-morgan.token('reqBody', (req) => JSON.stringify(req.body))
+const app = express();
 
-const morganCustom = morgan(':method :url :status :res[content-length] - :response-time ms :reqBody')
+morgan.token('reqBody', (req) => JSON.stringify(req.body));
 
-app.use(express.json())
-app.use(morganCustom)
-app.use(cors())
-app.use(express.static('build'))
+const morganCustom = morgan(':method :url :status :res[content-length] - :response-time ms :reqBody');
+
+app.use(express.json());
+app.use(morganCustom);
+app.use(cors());
+app.use(express.static('build'));
 
 app.get('/api/persons', (request, response) => {
   Person.find({})
-    .then((persons) => {
-      response.json(persons)
-    })
-})
+    .then((persons) => response.json(persons));
+});
 
 app.get('/info', (request, response) => {
-  const date = new Date()
+  const date = new Date();
 
-  Person.where({}).countDocuments(function(error, count) {
+  Person.where({}).countDocuments((err, count) => {
     try {
-      if (error) {
-        throw error
+      if (err) {
+        throw err;
       }
       const info = `<p>Phonebook has info for ${count} people</p>
-        <p>${date}</p>`
+        <p>${date}</p>`;
 
-      response.send(info)
+      response.send(info);
     } catch (error) {
-      console.log(error.message)
-      response.status(500).end()
+      console.log(error.message);
+      response.status(500).end();
     }
   });
-})
+});
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
-    .then(person => {
-      if(person) {
-        response.json(person)
+    .then((person) => {
+      if (person) {
+        response.json(person);
       } else {
-        response.status(404).end()
+        response.status(404).end();
       }
     })
-    .catch(error => next(error))
-})
+    .catch((error) => next(error));
+});
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const { name, number } = request.body
+  const { name, number } = request.body;
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    { name, number }, 
-    { new: true, runValidators: true, context: 'query' })
-    .then(updatedPerson => {
-      response.json(updatedPerson)
-    })
-    .catch(error => next(error))
-})
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: 'query' },
+  )
+    .then((updatedPerson) => response.json(updatedPerson))
+    .catch((error) => next(error));
+});
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(res => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
-})
+    .then(() => response.status(204).end())
+    .catch((error) => next(error));
+});
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
-  const name = body.name? body.name.trim() : ""
-  const number = body.number? body.number.trim() : ""
+  const { body } = request;
+  const newName = body.name ? body.name.trim() : '';
+  const newNumber = body.number ? body.number.trim() : '';
 
-  if(!name) {
-    return response.status(400).json({error: "name is missing"})
-  } else if (!number) {
-    return response.status(400).json({error: "number is missing"})
+  if (!newName) {
+    return response.status(400).json({ error: 'name is missing' });
+  }
+  if (!newNumber) {
+    return response.status(400).json({ error: 'number is missing' });
   }
 
-  Person.where({name:{'$regex' : `^${name.toLowerCase()}$`, '$options' : 'i'}})
-    .findOne((error, person) => {
+  Person.where({ name: { $regex: `^${newName.toLowerCase()}$`, $options: 'i' } })
+    .findOne((err, person) => {
       try {
-        if(error) {
-          throw error
+        if (err) {
+          throw err;
         }
 
-        if(!person) {
-          const person = new Person({
-            name: name,
-            number: number
-          })
-        
-          person.save()
-            .then((savedPerson) => {
-              response.status(201).json(savedPerson)
-            })
-            .catch(error => next(error))
-        } else {
-          return response.status(400).json({error: "name must be unique"})
+        if (person) {
+          return response.status(400).json({ error: 'name must be unique' });
         }
-      } catch(error) {
-        console.log(error.message)
-        response.status(500).end()
+
+        const newPerson = new Person({
+          name: newName,
+          number: newNumber,
+        });
+
+        newPerson.save()
+          .then((savedPerson) => response.status(201).json(savedPerson))
+          .catch((error) => next(error));
+      } catch (error) {
+        console.log(error.message);
+        return response.status(500).end();
       }
-    }
-  )
-})
+    });
+});
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error)
+  console.log(error);
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformated id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    return response.status(400).send({ error: 'malformated id' });
+  }
+  if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
   }
 
-  next(error)
-}
+  next(error);
+};
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
