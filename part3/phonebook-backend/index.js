@@ -47,21 +47,32 @@ app.get('/api/persons', (request, response) => {
 app.get('/info', (request, response) => {
   const date = new Date()
 
-  const info = `<p>Phonebook has info for ${persons.length} people</p>
-  <p>${date}</p>`
+  Person.where({}).countDocuments(function(error, count) {
+    try {
+      if (error) {
+        throw error
+      }
+      const info = `<p>Phonebook has info for ${count} people</p>
+        <p>${date}</p>`
 
-  response.send(info)
+      response.send(info)
+    } catch (error) {
+      console.log(error.message)
+      response.status(500).end()
+    }
+  });
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(p => p.id === id)
-  
-  if(person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if(person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
