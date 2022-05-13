@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+  "title": "How to make blog list backend service with express.js",
+  "author": "Dian Yehezkiel",
+  "url": "https://example.com",
+  "likes": 123
+}
