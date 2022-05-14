@@ -8,6 +8,10 @@ const totalLikes = (blogs) => {
 };
 
 const favoriteBlog = (blogs) => {
+  if (blogs.length === 0) {
+    return {};
+  }
+
   const mostLikesBlog = {
     title: '',
     author: '',
