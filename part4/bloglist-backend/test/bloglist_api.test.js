@@ -20,6 +20,13 @@ test('all blogs are returned', async () => {
   expect(response.body).toHaveLength(testHelper.initialBlogs.length);
 });
 
+test('id property is defined', async () => {
+  const blogs = await testHelper.blogsInDb();
+  const firstBlog = blogs[0];
+
+  expect(firstBlog.id).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
