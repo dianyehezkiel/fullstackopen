@@ -81,6 +81,26 @@ test('blog without content is not added', async () => {
   expect(allBlogs).toHaveLength(testHelper.initialBlogs.length);
 });
 
+test('blog with valid id is updated', async () => {
+  const allBlogs = await testHelper.blogsInDb();
+  const firstBlog = allBlogs[0];
+
+  const blogLikes = {
+    likes: 99,
+  };
+
+  await api
+    .put(`/api/blogs/${firstBlog.id}`)
+    .send(blogLikes)
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const finalBlogs = await testHelper.blogsInDb();
+  const updatedBlog = finalBlogs.find((blog) => blog.id === firstBlog.id);
+
+  expect(updatedBlog.likes).toBe(99);
+});
+
 test('delete success with valid id', async () => {
   const allBlogs = await testHelper.blogsInDb();
   const blogToDelete = allBlogs[0];
