@@ -67,6 +67,20 @@ test('likes property default to zero if missing', async () => {
   expect(lastBlog.likes).toBe(0);
 });
 
+test('blog without content is not added', async () => {
+  const newBlog = {
+    author: 'Edsger W. Dijkstra',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+
+  const allBlogs = await testHelper.blogsInDb();
+  expect(allBlogs).toHaveLength(testHelper.initialBlogs.length);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
