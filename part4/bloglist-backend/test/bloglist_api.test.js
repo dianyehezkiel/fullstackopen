@@ -27,6 +27,27 @@ test('id property is defined', async () => {
   expect(firstBlog.id).toBeDefined();
 });
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const allBlogs = await testHelper.blogsInDb();
+  expect(allBlogs).toHaveLength(testHelper.initialBlogs.length + 1);
+
+  const titles = allBlogs.map((blog) => blog.title);
+  expect(titles).toContain('Go To Statement Considered Harmful');
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
