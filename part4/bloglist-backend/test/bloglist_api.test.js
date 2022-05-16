@@ -81,6 +81,22 @@ test('blog without content is not added', async () => {
   expect(allBlogs).toHaveLength(testHelper.initialBlogs.length);
 });
 
+test('delete success with valid id', async () => {
+  const allBlogs = await testHelper.blogsInDb();
+  const blogToDelete = allBlogs[0];
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204);
+
+  const finalBlogs = await testHelper.blogsInDb();
+
+  expect(finalBlogs).toHaveLength(testHelper.initialBlogs.length - 1);
+
+  const titles = finalBlogs.map((blog) => blog.title);
+  expect(titles).not.toContain(blogToDelete.title);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
