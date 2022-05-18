@@ -1,0 +1,28 @@
+// Succeds login
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "dianyehezkiel",
+  "password": "pa55word"
+}
+
+###
+// Failed login
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "dianyehezkiel",
+  "password": "wrongpassword"
+}
+
+###
+// Failed login
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "wrongusername",
+  "password": "pa55word"
+}
