@@ -1,9 +1,11 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
+Authorization: Bearer <token>
 
 {
   "title": "How to make blog list backend service with express.js",
   "author": "Dian Yehezkiel",
+  "userId": "<id>",
   "url": "https://example.com",
   "likes": 123
 }
