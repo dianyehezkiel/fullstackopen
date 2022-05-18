@@ -12,5 +12,6 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'no-underscore-dangle': 0,
   },
 };
