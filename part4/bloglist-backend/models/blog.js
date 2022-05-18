@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
@@ -8,6 +7,10 @@ const blogSchema = new mongoose.Schema({
     required: true,
   },
   author: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   url: {
     type: String,
     required: true,
