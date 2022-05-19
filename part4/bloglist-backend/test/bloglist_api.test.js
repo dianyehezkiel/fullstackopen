@@ -1,14 +1,55 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const testHelper = require('./test_helper');
 
 const api = supertest(app);
+const usersToken = [];
+let userId = '';
+
+beforeAll(async () => {
+  await User.deleteMany({});
+
+  const promiseUsers = testHelper.initialUsers.map(async (user) => {
+    const passwordHash = await bcrypt.hash(user.password, 10);
+    return new User({
+      username: user.username,
+      name: user.name,
+      passwordHash,
+    });
+  });
+  const userObjects = await Promise.all(promiseUsers);
+  const promiseArray = userObjects.map((user) => user.save());
+  const users = await Promise.all(promiseArray);
+
+  userId = users[0]._id;
+
+  for (let i = 0; i < users.length; i += 1) {
+    const userForToken = {
+      username: users[i].username,
+      id: users[i]._id,
+    };
+
+    const token = jwt.sign(userForToken, process.env.SECRET);
+    usersToken.push(token);
+  }
+});
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  await Blog.insertMany(testHelper.initialBlogs);
+  const blogObjects = testHelper.initialBlogs.map((blog) => {
+    const newBlog = {
+      ...blog,
+      user: userId,
+    };
+    return new Blog(newBlog);
+  });
+  const promiseArray = blogObjects.map((blog) => blog.save());
+  await Promise.all(promiseArray);
 });
 
 describe('GET all blogs', () => {
@@ -48,12 +89,14 @@ describe('POST blog', () => {
     const newBlog = {
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
+      user: userId,
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
       likes: 5,
     };
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${usersToken[0]}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -69,11 +112,13 @@ describe('POST blog', () => {
     const newBlog = {
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
+      user: userId,
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     };
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${usersToken[0]}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -87,12 +132,33 @@ describe('POST blog', () => {
   test('blog without title and url is not added', async () => {
     const newBlog = {
       author: 'Edsger W. Dijkstra',
+      user: userId,
+    };
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${usersToken[0]}`)
+      .send(newBlog)
+      .expect(400);
+
+    const allBlogs = await testHelper.blogsInDb();
+    expect(allBlogs).toHaveLength(testHelper.initialBlogs.length);
+  });
+
+  test('blog without token is not added and get proper statuscode', async () => {
+    const newBlog = {
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      user: userId,
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5,
     };
 
     await api
       .post('/api/blogs')
       .send(newBlog)
-      .expect(400);
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
 
     const allBlogs = await testHelper.blogsInDb();
     expect(allBlogs).toHaveLength(testHelper.initialBlogs.length);
@@ -100,20 +166,53 @@ describe('POST blog', () => {
 });
 
 describe('UPDATE blog', () => {
-  test('blog with valid id is updated', async () => {
+  test('blog with valid id and user token is updated', async () => {
     const allBlogs = await testHelper.blogsInDb();
-    const firstBlog = allBlogs[0];
+    const blogToUpdate = allBlogs[0];
 
     await api
-      .put(`/api/blogs/${firstBlog.id}`)
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${usersToken[0]}`)
       .send({ likes: 99 })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     const finalBlogs = await testHelper.blogsInDb();
-    const updatedBlog = finalBlogs.find((blog) => blog.id === firstBlog.id);
+    const updatedBlog = finalBlogs.find((blog) => blog.id === blogToUpdate.id);
 
     expect(updatedBlog.likes).toBe(99);
+  });
+
+  test('user that not create blog can not update blog and responded with proper status code', async () => {
+    const allBlogs = await testHelper.blogsInDb();
+    const blogToUpdate = allBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${usersToken[1]}`)
+      .send({ likes: 99 })
+      .expect(403);
+
+    const finalBlogs = await testHelper.blogsInDb();
+    const notUpdatedBlog = finalBlogs.find((blog) => blog.id === blogToUpdate.id);
+
+    expect(notUpdatedBlog.likes).toBe(blogToUpdate.likes);
+  });
+
+  test('blog update without token responded with proper statuscode', async () => {
+    const allBlogs = await testHelper.blogsInDb();
+    const blogToUpdate = allBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ likes: 99 })
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    const finalBlogs = await testHelper.blogsInDb();
+    const notUpdatedBlog = finalBlogs.find((blog) => blog.id === blogToUpdate.id);
+
+    expect(notUpdatedBlog.likes).toBe(blogToUpdate.likes);
   });
 });
 
@@ -124,6 +223,7 @@ describe('DELETE blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${usersToken[0]}`)
       .expect(204);
 
     const finalBlogs = await testHelper.blogsInDb();
@@ -132,6 +232,34 @@ describe('DELETE blog', () => {
 
     const titles = finalBlogs.map((blog) => blog.title);
     expect(titles).not.toContain(blogToDelete.title);
+  });
+
+  test('user that not create blog can not delete blog and responded with proper status code', async () => {
+    const allBlogs = await testHelper.blogsInDb();
+    const blogToDelete = allBlogs[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${usersToken[1]}`)
+      .expect(403);
+
+    const finalBlogs = await testHelper.blogsInDb();
+
+    expect(finalBlogs).toHaveLength(testHelper.initialBlogs.length);
+  });
+
+  test('blog delete without token responded with proper statuscode', async () => {
+    const allBlogs = await testHelper.blogsInDb();
+    const blogToDelete = allBlogs[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    const finalBlogs = await testHelper.blogsInDb();
+
+    expect(finalBlogs).toHaveLength(testHelper.initialBlogs.length);
   });
 });
 
