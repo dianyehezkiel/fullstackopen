@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
+const middleware = require('../utils/middleware');
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
@@ -7,7 +8,7 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const { body, user } = request;
 
   const blog = new Blog({
@@ -25,23 +26,33 @@ blogsRouter.post('/', async (request, response) => {
   return response.status(201).json(savedBlog);
 });
 
-blogsRouter.put('/:id', async (request, response) => {
-  const { body } = request;
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
+  const { body, user } = request;
+  const blog = await Blog.findById(request.params.id);
+  if (!blog) {
+    return response.status(404).json({
+      error: 'Can not find blog',
+    });
+  }
 
-  const blog = {
-    likes: body.likes,
-  };
+  if (blog.user.toString() === user._id.toString()) {
+    const likes = {
+      likes: body.likes,
+    };
 
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id,
-    blog,
-    { new: true },
-  );
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      likes,
+      { new: true },
+    );
 
-  response.json(updatedBlog);
+    return response.json(updatedBlog);
+  }
+
+  return response.status(403).end();
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const { user } = request;
 
   const blog = await Blog.findById(request.params.id);
