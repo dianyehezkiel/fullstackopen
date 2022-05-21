@@ -44,7 +44,7 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
       request.params.id,
       likes,
       { new: true },
-    );
+    ).populate('user', { username: 1, name: 1, id: 1 });
 
     return response.json(updatedBlog);
   }
