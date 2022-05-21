@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import UserHeader from './components/UserHeader'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -10,6 +11,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -22,6 +26,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -34,7 +39,8 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
-      ) 
+      )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -43,9 +49,26 @@ const App = () => {
     }
   }
 
-  const handleLogout = (event) => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: title,
+      author: author,
+      url: url,
+    }
+
+    blogService.create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setAuthor('')
+        setTitle('')
+        setUrl('')
+      })
   }
 
   return (
@@ -60,6 +83,15 @@ const App = () => {
       : <>
         <h2>blogs</h2>
         <UserHeader nameUser={user.name} handleLogout={handleLogout} />
+        <BlogForm
+          title={title}
+          author={author}
+          url={url}
+          setTitle={setTitle}
+          setAuthor={setAuthor}
+          setUrl={setUrl}
+          onSubmit={addBlog}
+        />
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
