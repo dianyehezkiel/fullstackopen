@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const blogs = await blogService.getAll()
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes ) )
     }
     fetchData()
   }, [])
@@ -77,7 +77,11 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const addedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(addedBlog))
+      setBlogs(
+        blogs
+          .concat(addedBlog)
+          .sort((a, b) => b.likes - a.likes )
+      )
       setOpsStatus('success')
       setNotifMessage(`Successfully added "${addedBlog.title}" by ${addedBlog.author}`)
       setTimeout(() => {
@@ -98,7 +102,11 @@ const App = () => {
   const updateLikes = async (likes, id) => {
     try {
       const updatedBlog = await blogService.update(likes, id)
-      setBlogs(blogs.map((blog) => blog.id === id ? updatedBlog : blog))
+      setBlogs(
+        blogs
+          .map((blog) => blog.id === id ? updatedBlog : blog)
+          .sort((a, b) => b.likes - a.likes )
+      )
     } catch(exception) {
       setOpsStatus('error')
       setNotifMessage(exception)
