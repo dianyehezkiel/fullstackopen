@@ -19,9 +19,11 @@ const App = () => {
   const [notifMessage, setNotifMessage] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    const fetchData = async () => {
+      const blogs = await blogService.getAll()
       setBlogs( blogs )
-    )  
+    }
+    fetchData()
   }, [])
 
   useEffect(() => {
@@ -71,7 +73,7 @@ const App = () => {
       }, 5000)
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     const blogObject = {
       title: title,
@@ -79,27 +81,26 @@ const App = () => {
       url: url,
     }
 
-    blogService.create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setOpsStatus('success')
-        setNotifMessage(`Successfully added "${title}" by ${author}`)
-        setTimeout(() => {
-          setNotifMessage(null)
-          setOpsStatus('')
-        }, 5000)
-        setAuthor('')
-        setTitle('')
-        setUrl('')
-      })
-      .catch(exception => {
-        setOpsStatus('error')
-        setNotifMessage(exception)
-        setTimeout(() => {
-          setNotifMessage(null)
-          setOpsStatus('')
-        }, 5000)
-      })
+    try {
+      const addedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(addedBlog))
+      setOpsStatus('success')
+      setNotifMessage(`Successfully added "${title}" by ${author}`)
+      setTimeout(() => {
+        setNotifMessage(null)
+        setOpsStatus('')
+      }, 5000)
+      setAuthor('')
+      setTitle('')
+      setUrl('')
+    } catch (exception) {
+      setOpsStatus('error')
+      setNotifMessage(exception)
+      setTimeout(() => {
+        setNotifMessage(null)
+        setOpsStatus('')
+      }, 5000)
+    }
   }
 
   return (
