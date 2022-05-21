@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({blog, updateLikes}) => {
+const Blog = ({blog, updateLikes, deleteBlog, owner}) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -12,6 +12,7 @@ const Blog = ({blog, updateLikes}) => {
   }
 
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const showRemoveButton = { display: blog.user.username === owner ? '' : 'none'}
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -21,6 +22,14 @@ const Blog = ({blog, updateLikes}) => {
 
   const updateBlogLikes = () => {
     updateLikes({likes: blog.likes + 1}, blog.id)
+  }
+
+  const removeBlog = () => {
+    deleteBlog({
+      id: blog.id,
+      title: blog.title,
+      author: blog.author,
+    })
   }
 
   return (
@@ -36,6 +45,8 @@ const Blog = ({blog, updateLikes}) => {
         <button onClick={updateBlogLikes}>like</button>
         <br />
         {blog.user.name}
+        <br />
+        <button onClick={removeBlog} style={showRemoveButton}>remove</button>
       </div>
     </div>
   ) 

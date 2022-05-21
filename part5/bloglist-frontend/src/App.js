@@ -117,6 +117,28 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogObject) => {
+    try {
+      if(window.confirm(`Remove blog "${blogObject.title}" by ${blogObject.author}?`)){
+        await blogService.remove(blogObject.id)
+        setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
+        setOpsStatus('success')
+        setNotifMessage(`Successfully remove "${blogObject.title}" by ${blogObject.author}`)
+        setTimeout(() => {
+          setNotifMessage(null)
+          setOpsStatus('')
+        }, 5000)
+      }
+    } catch(exception) {
+      setOpsStatus('error')
+      setNotifMessage(exception)
+      setTimeout(() => {
+        setNotifMessage(null)
+        setOpsStatus('')
+      }, 5000)
+    }
+  }
+
   return (
     <div>
       {user === null
@@ -138,7 +160,13 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes}/>
+          <Blog 
+            key={blog.id}
+            blog={blog}
+            updateLikes={updateLikes}
+            deleteBlog={deleteBlog}
+            owner={user.username}
+          />
         )}
         </>
       }
