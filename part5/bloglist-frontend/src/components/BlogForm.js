@@ -1,30 +1,51 @@
-const BlogForm = (props) => (
+import { useState } from 'react'
+
+const BlogForm = ({ createBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title: title,
+      author: author,
+      url: url,
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+  
+  return (
   <>
     <h3>create new</h3>
-    <form onSubmit={props.onSubmit} style={{marginBottom: "16px"}}>
+    <form onSubmit={addBlog}>
       title:
       <input
-      value={props.title}
-      onChange={props.handleTitleChange}
+      value={title}
+      onChange={({ target }) => setTitle(target.value)}
       required
       />
       <br/>
       author:
       <input
-      value={props.author}
-      onChange={props.handleAuthorChange}
+      value={author}
+      onChange={({ target }) => setAuthor(target.value)}
       />
       <br/>
       url:
       <input
-      value={props.url}
-      onChange={props.handleUrlChange}
+      value={url}
+      onChange={({ target }) => setUrl(target.value)}
       required
       />
       <br/>
       <button type="submit">create</button>
     </form>
   </>
-)
+  )
+}
 
 export default BlogForm

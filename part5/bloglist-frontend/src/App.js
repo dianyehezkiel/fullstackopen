@@ -13,9 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [opsStatus, setOpsStatus] = useState('')
   const [notifMessage, setNotifMessage] = useState(null)
 
@@ -76,27 +73,17 @@ const App = () => {
       }, 5000)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-    }
-
+  const addBlog = async (blogObject) => {
     try {
+      blogFormRef.current.toggleVisibility()
       const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog))
       setOpsStatus('success')
-      setNotifMessage(`Successfully added "${title}" by ${author}`)
+      setNotifMessage(`Successfully added "${addedBlog.title}" by ${addedBlog.author}`)
       setTimeout(() => {
         setNotifMessage(null)
         setOpsStatus('')
       }, 5000)
-      setAuthor('')
-      setTitle('')
-      setUrl('')
-      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setOpsStatus('error')
       setNotifMessage(exception)
@@ -125,15 +112,7 @@ const App = () => {
         <Notification type={opsStatus} message={notifMessage} />
         <UserHeader nameUser={user.name} handleLogout={handleLogout} />
         <Togglable buttonLabel='new note' ref={blogFormRef}>
-          <BlogForm
-            title={title}
-            author={author}
-            url={url}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-            onSubmit={addBlog}
-          />
+          <BlogForm createBlog={addBlog} />
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
