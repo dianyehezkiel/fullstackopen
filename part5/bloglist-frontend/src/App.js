@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import UserHeader from './components/UserHeader'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -14,6 +15,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [opsStatus, setOpsStatus] = useState('')
+  const [notifMessage, setNotifMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -44,7 +47,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotifMessage(null)
+      setOpsStatus('')
     } catch (exception) {
+      setOpsStatus('error')
+      setNotifMessage('Incorrect username or Password')
+      setTimeout(() => {
+        setNotifMessage(null)
+        setOpsStatus('')
+      }, 5000)
       console.log(exception)
     }
   }
@@ -52,6 +63,12 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
+    setOpsStatus('success')
+      setNotifMessage('Successfully logged out')
+      setTimeout(() => {
+        setNotifMessage(null)
+        setOpsStatus('')
+      }, 5000)
   }
 
   const addBlog = (event) => {
@@ -65,23 +82,42 @@ const App = () => {
     blogService.create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
+        setOpsStatus('success')
+        setNotifMessage(`Successfully added "${title}" by ${author}`)
+        setTimeout(() => {
+          setNotifMessage(null)
+          setOpsStatus('')
+        }, 5000)
         setAuthor('')
         setTitle('')
         setUrl('')
+      })
+      .catch(exception => {
+        setOpsStatus('error')
+        setNotifMessage(exception)
+        setTimeout(() => {
+          setNotifMessage(null)
+          setOpsStatus('')
+        }, 5000)
       })
   }
 
   return (
     <div>
       {user === null
-      ? <LoginForm 
+      ? <>
+        <h2>Login to Application</h2>
+        <Notification type={opsStatus} message={notifMessage} />
+        <LoginForm 
           username={username}
           password={password}
           setUsername={setUsername}
           setPassword={setPassword}
           handleLogin={handleLogin} />
+        </>
       : <>
         <h2>blogs</h2>
+        <Notification type={opsStatus} message={notifMessage} />
         <UserHeader nameUser={user.name} handleLogout={handleLogout} />
         <BlogForm
           title={title}
