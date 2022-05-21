@@ -5,20 +5,20 @@ const BlogForm = (props) => (
       title:
       <input
       value={props.title}
-      onChange={({ target }) => props.setTitle(target.value)}
+      onChange={props.handleTitleChange}
       required
       />
       <br/>
       author:
       <input
       value={props.author}
-      onChange={({ target }) => props.setAuthor(target.value)}
+      onChange={props.handleAuthorChange}
       />
       <br/>
       url:
       <input
       value={props.url}
-      onChange={({ target }) => props.setUrl(target.value)}
+      onChange={props.handleUrlChange}
       required
       />
       <br/>

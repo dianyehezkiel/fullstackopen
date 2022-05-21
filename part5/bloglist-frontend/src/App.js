@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import UserHeader from './components/UserHeader'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -34,6 +35,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -93,6 +96,7 @@ const App = () => {
       setAuthor('')
       setTitle('')
       setUrl('')
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setOpsStatus('error')
       setNotifMessage(exception)
@@ -120,15 +124,17 @@ const App = () => {
         <h2>blogs</h2>
         <Notification type={opsStatus} message={notifMessage} />
         <UserHeader nameUser={user.name} handleLogout={handleLogout} />
-        <BlogForm
-          title={title}
-          author={author}
-          url={url}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
-          onSubmit={addBlog}
-        />
+        <Togglable buttonLabel='new note' ref={blogFormRef}>
+          <BlogForm
+            title={title}
+            author={author}
+            url={url}
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value)}
+            onSubmit={addBlog}
+          />
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
