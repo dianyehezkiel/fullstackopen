@@ -66,11 +66,11 @@ const App = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
     setOpsStatus('success')
-      setNotifMessage('Successfully logged out')
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
+    setNotifMessage('Successfully logged out')
+    setTimeout(() => {
+      setNotifMessage(null)
+      setOpsStatus('')
+    }, 5000)
   }
 
   const addBlog = async (blogObject) => {
@@ -98,7 +98,7 @@ const App = () => {
     }
   }
 
-  
+
   const updateLikes = async (likes, id) => {
     try {
       const updatedBlog = await blogService.update(likes, id)
@@ -142,32 +142,32 @@ const App = () => {
   return (
     <div>
       {user === null
-      ? <>
-        <h2>Login to Application</h2>
-        <Notification type={opsStatus} message={notifMessage} />
-        <LoginForm 
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleLogin={handleLogin} />
+        ? <>
+          <h2>Login to Application</h2>
+          <Notification type={opsStatus} message={notifMessage} />
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleLogin={handleLogin} />
         </>
-      : <>
-        <h2>blogs</h2>
-        <Notification type={opsStatus} message={notifMessage} />
-        <UserHeader nameUser={user.name} handleLogout={handleLogout} />
-        <Togglable buttonLabel='new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
-        {blogs.map(blog =>
-          <Blog 
-            key={blog.id}
-            blog={blog}
-            updateLikes={updateLikes}
-            deleteBlog={deleteBlog}
-            owner={user.username}
-          />
-        )}
+        : <>
+          <h2>blogs</h2>
+          <Notification type={opsStatus} message={notifMessage} />
+          <UserHeader nameUser={user.name} handleLogout={handleLogout} />
+          <Togglable buttonLabel='new blog' ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+          {blogs.map((blog) =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateLikes={updateLikes}
+              deleteBlog={deleteBlog}
+              owner={user.username}
+            />
+          )}
         </>
       }
     </div>

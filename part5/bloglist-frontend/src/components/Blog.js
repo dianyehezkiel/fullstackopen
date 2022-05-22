@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const Blog = ({blog, updateLikes, deleteBlog, owner}) => {
+const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -12,7 +12,7 @@ const Blog = ({blog, updateLikes, deleteBlog, owner}) => {
   }
 
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const showRemoveButton = { display: blog.user.username === owner ? '' : 'none'}
+  const showRemoveButton = { display: blog.user.username === owner ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -21,7 +21,7 @@ const Blog = ({blog, updateLikes, deleteBlog, owner}) => {
   const viewButtonLabel = visible ? 'hide' : 'view'
 
   const updateBlogLikes = () => {
-    updateLikes({likes: blog.likes + 1}, blog.id)
+    updateLikes({ likes: blog.likes + 1 }, blog.id)
   }
 
   const removeBlog = () => {
@@ -49,7 +49,7 @@ const Blog = ({blog, updateLikes, deleteBlog, owner}) => {
         <button onClick={removeBlog} style={showRemoveButton}>remove</button>
       </div>
     </div>
-  ) 
+  )
 }
 
 export default Blog
