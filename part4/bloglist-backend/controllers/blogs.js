@@ -36,7 +36,7 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
     });
   }
 
-  if (blog.user.toString() === user._id.toString()) {
+  if (user._id) {
     const likes = {
       likes: body.likes,
     };
