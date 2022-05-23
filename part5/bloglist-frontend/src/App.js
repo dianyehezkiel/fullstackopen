@@ -53,7 +53,7 @@ const App = () => {
       setOpsStatus('')
     } catch (exception) {
       setOpsStatus('error')
-      setNotifMessage('Incorrect username or Password')
+      setNotifMessage('Incorrect Username or Password')
       setTimeout(() => {
         setNotifMessage(null)
         setOpsStatus('')
