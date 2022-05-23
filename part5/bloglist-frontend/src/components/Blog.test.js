@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
   let container
+  const updateLikes = jest.fn()
 
   beforeEach(() => {
     const blog = {
@@ -21,7 +22,7 @@ describe('<Blog />', () => {
       likes: 12
     }
 
-    container = render(<Blog blog={blog} />).container
+    container = render(<Blog blog={blog} updateLikes={updateLikes}/>).container
   })
 
   test('renders content', () => {
@@ -55,5 +56,17 @@ describe('<Blog />', () => {
     expect(blogUrl).toBeDefined()
     expect(blogLikes).toBeDefined()
     expect(blogCreator).toBeDefined()
+  })
+
+  test('updateLikes called twice if like button clicked twice', async () => {
+    const user = userEvent.setup()
+    const buttonView = screen.getByText('view')
+    await user.click(buttonView)
+
+    const buttonLikes = screen.getByText('like')
+    await user.click(buttonLikes)
+    await user.click(buttonLikes)
+
+    expect(updateLikes.mock.calls).toHaveLength(2)
   })
 })
