@@ -115,6 +115,50 @@ describe('Blog App', function() {
           .contains('remove')
           .should('have.css', 'display', 'none')
       })
+
+      it('Blogs ordered according to likes (descending)', function() {
+        cy.createBlog({
+          title: 'Another blog',
+          author: 'Cypress',
+          url: 'https://cypress.io'
+        })
+
+        cy.contains('Another blog Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('Another blog Cypress')
+          .parent()
+          .contains('like')
+          .click()
+        cy.wait(2000)
+
+        cy.get('.blog').eq(0).should('contain', 'Another blog Cypress')
+        cy.get('.blog').eq(1).should('contain', 'Creating a blog with cypress Cypress')
+
+        cy.contains('Another blog Cypress')
+          .contains('hide')
+          .click()
+
+        cy.contains('Creating a blog with cypress Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('Creating a blog with cypress Cypress')
+          .parent()
+          .contains('like')
+          .click()
+        cy.wait(2000)
+
+        cy.contains('Creating a blog with cypress Cypress')
+          .parent()
+          .contains('like')
+          .click()
+        cy.wait(2000)
+
+        cy.get('.blog').eq(0).should('contain', 'Creating a blog with cypress Cypress')
+        cy.get('.blog').eq(1).should('contain', 'Another blog Cypress')
+      })
     })
   })
 })
