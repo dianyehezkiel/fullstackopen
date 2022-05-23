@@ -183,22 +183,6 @@ describe('UPDATE blog', () => {
     expect(updatedBlog.likes).toBe(99);
   });
 
-  test('user that not create blog can not update blog and responded with proper status code', async () => {
-    const allBlogs = await testHelper.blogsInDb();
-    const blogToUpdate = allBlogs[0];
-
-    await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
-      .set('Authorization', `Bearer ${usersToken[1]}`)
-      .send({ likes: 99 })
-      .expect(403);
-
-    const finalBlogs = await testHelper.blogsInDb();
-    const notUpdatedBlog = finalBlogs.find((blog) => blog.id === blogToUpdate.id);
-
-    expect(notUpdatedBlog.likes).toBe(blogToUpdate.likes);
-  });
-
   test('blog update without token responded with proper statuscode', async () => {
     const allBlogs = await testHelper.blogsInDb();
     const blogToUpdate = allBlogs[0];
