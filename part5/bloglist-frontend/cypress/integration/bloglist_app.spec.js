@@ -7,14 +7,11 @@
 describe('Blog App', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const newUser = {
+    cy.createUser({
       username: 'dianyehezkiel',
       name: 'Dian Yehezkiel',
       password: 'pa55word'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users', newUser)
-
-    cy.visit('http://localhost:3000')
+    })
   })
 
   it('Login form is shown', function() {
@@ -74,7 +71,7 @@ describe('Blog App', function() {
       })
 
       it('A blog can be liked', function() {
-        cy.contains('Creating a blog with cypress')
+        cy.contains('Creating a blog with cypress Cypress')
           .contains('view')
           .click()
 
@@ -84,6 +81,39 @@ describe('Blog App', function() {
           .click()
 
         cy.contains('likes 1')
+      })
+
+      it('A blog can be removed by creator', function() {
+        cy.contains('Creating a blog with cypress Cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('remove')
+          .click()
+
+        cy.get('.blog-head')
+          .contains('Creating a blog with cypress Cypress')
+          .should('not.be.exist')
+      })
+
+      it('A blog\'s remove button hidden from user that not create it', function() {
+        cy.contains('Logout')
+          .click()
+
+        cy.createUser({
+          username: 'otheruser',
+          name: 'Other User',
+          password: 'otherpassword'
+        })
+        cy.login({ username: 'otheruser', password: 'otherpassword' })
+
+        cy.contains('Creating a blog with cypress Cypress')
+          .contains('view')
+          .click()
+
+        cy.get('.blog-detail')
+          .contains('remove')
+          .should('have.css', 'display', 'none')
       })
     })
   })
