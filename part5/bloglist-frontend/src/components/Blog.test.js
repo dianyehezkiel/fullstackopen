@@ -1,10 +1,13 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
-  test('renders content', () => {
+  let container
+
+  beforeEach(() => {
     const blog = {
       id: '1234567890',
       title: 'sample title',
@@ -18,12 +21,39 @@ describe('<Blog />', () => {
       likes: 12
     }
 
-    const { container } = render(<Blog blog={blog} />)
+    container = render(<Blog blog={blog} />).container
+  })
 
+  test('renders content', () => {
     const blogHead = container.querySelector('.blog-head')
     const blogDetail = container.querySelector('.blog-detail')
 
     expect(blogHead).toHaveTextContent('sample title sample author')
     expect(blogDetail).toHaveStyle('display: none')
+
+    const blogUrl = screen.queryByText('example.com')
+    const blogLikes = screen.queryByText('likes 12')
+    const blogCreator = screen.queryByText('sample user')
+
+    expect(blogUrl).toBeNull()
+    expect(blogLikes).toBeNull()
+    expect(blogCreator).toBeNull()
+  })
+
+  test('blog detail showed if view button clicked', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const blogDetail = container.querySelector('.blog-detail')
+    expect(blogDetail).not.toHaveStyle('display: none')
+
+    const blogUrl = screen.queryByText('example.com')
+    const blogLikes = screen.queryByText('likes 12')
+    const blogCreator = screen.queryByText('sample user')
+
+    expect(blogUrl).toBeDefined()
+    expect(blogLikes).toBeDefined()
+    expect(blogCreator).toBeDefined()
   })
 })
