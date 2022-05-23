@@ -36,8 +36,8 @@ describe('Blog App', function() {
     })
 
     it('fails with wrong credentials', function() {
-      cy.get('#username-input').type('dianyehezkiel', { delay: 100 })
-      cy.get('#password-input').type('wrong', { delay: 100 })
+      cy.get('#username-input').type('dianyehezkiel')
+      cy.get('#password-input').type('wrong')
       cy.get('#login-button').click()
 
       cy.get('.error')
@@ -62,6 +62,29 @@ describe('Blog App', function() {
       cy.get('#create-button').click()
 
       cy.contains('This is a new blog created by cypress Cypress')
+    })
+
+    describe('A blog exist', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'Creating a blog with cypress',
+          author: 'Cypress',
+          url: 'https://cypress.io'
+        })
+      })
+
+      it('A blog can be liked', function() {
+        cy.contains('Creating a blog with cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('likes 0')
+
+        cy.contains('like')
+          .click()
+
+        cy.contains('likes 1')
+      })
     })
   })
 })
