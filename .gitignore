@@ -27,3 +27,6 @@ out
 
 # ignore practice dir
 */practice*
+
+#cypress video
+*/*/cypress/videos
