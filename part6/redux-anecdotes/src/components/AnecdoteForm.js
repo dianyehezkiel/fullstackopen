@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux"
 import { addAnecdote } from "../reducers/anecdoteReducer"
 import { removeNotif, showNotif } from "../reducers/notificationReducer"
-import anecdotesService from "../services/anecodtes"
+import anecdotesService from "../services/anecdotes"
 
 let timeoutId
 
