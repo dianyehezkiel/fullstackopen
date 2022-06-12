@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux"
 import { addAnecdote } from "../reducers/anecdoteReducer"
 import { removeNotif, showNotif } from "../reducers/notificationReducer"
-import anecdotesService from "../services/anecdotes"
 
 let timeoutId
 
@@ -12,8 +11,7 @@ const AnecdoteForm = () => {
     e.preventDefault()
     const content = e.target.anecdote.value
     e.target.anecdote.value = ''
-    const newAnecdote = await anecdotesService.createAnecdote(content)
-    dispatch(addAnecdote(newAnecdote))
+    dispatch(addAnecdote(content))
     dispatch(showNotif(`You added "${content}"`))
     if (timeoutId) {
       clearTimeout(timeoutId)
