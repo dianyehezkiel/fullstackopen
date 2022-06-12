@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
-import { vote } from "../reducers/anecdoteReducer"
+import { voteAnecdote } from "../reducers/anecdoteReducer"
 import { removeNotif, showNotif } from "../reducers/notificationReducer"
 
 let timeoutId
@@ -31,7 +31,7 @@ const AnecdoteList = () => {
   
 
   const onVote = (anecdote) => {
-    dispatch(vote(anecdote.id))
+    dispatch(voteAnecdote(anecdote.id))
     dispatch(showNotif(`You voted "${anecdote.content}"`))
     if (timeoutId) {
       clearTimeout(timeoutId)
