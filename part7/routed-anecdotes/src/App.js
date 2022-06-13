@@ -79,9 +79,9 @@ const CreateNew = (props) => {
   }
 
   const handleReset = () => {
-    content.resetField()
-    author.resetField()
-    info.resetField()
+    content.reset.value()
+    author.reset.value()
+    info.reset.value()
   }
 
   return (
@@ -92,25 +92,19 @@ const CreateNew = (props) => {
           content
           <input 
             name='content'
-            type={content.type}
-            onChange={content.onChange}
-            value={content.value} />
+            {...content} />
         </div>
         <div>
           author
           <input 
             name='author' 
-            type={author.type}
-            onChange={author.onChange}
-            value={author.value} />
+            {...author} />
         </div>
         <div>
           url for more info
           <input
             name='info'
-            type={info.type}
-            onChange={info.onChange}
-            value={info.value} />
+            {...info} />
         </div>
         <button>create</button>
         <input type='reset' value='reset' />
