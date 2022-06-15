@@ -1,33 +1,20 @@
-import { useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import UserHeader from './components/UserHeader'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { removeNotif, setNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  initBlogs,
-  addBlog,
-  updateLikes,
-  deleteBlog,
-} from './reducers/blogsReducer'
 import { setUser } from './reducers/userReducer'
+import Users from './components/Users'
 
 const App = () => {
-  const blogs = useSelector(({ blogs }) =>
-    [...blogs].sort((a, b) => b.likes - a.likes)
-  )
   const user = useSelector(({ user }) => user)
 
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(initBlogs())
-  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -37,8 +24,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const blogFormRef = useRef()
 
   const handleLogin = async (username, password) => {
     try {
@@ -62,25 +47,6 @@ const App = () => {
     dispatch(setNotification('Successfully logged out', 'success'))
   }
 
-  const handleCreate = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    dispatch(addBlog(blogObject))
-  }
-
-  const handleLike = (id, likes) => {
-    dispatch(updateLikes(id, likes))
-  }
-
-  const handleDelete = async (blogObject) => {
-    if (
-      window.confirm(
-        `Remove blog "${blogObject.title}" by ${blogObject.author}?`
-      )
-    ) {
-      dispatch(deleteBlog(blogObject))
-    }
-  }
-
   return (
     <div>
       {user === null ? (
@@ -94,18 +60,10 @@ const App = () => {
           <h2>blogs</h2>
           <Notification />
           <UserHeader handleLogout={handleLogout} />
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={handleCreate} />
-          </Togglable>
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateLikes={handleLike}
-              deleteBlog={handleDelete}
-              username={user.username}
-            />
-          ))}
+          <Routes>
+            <Route path='/' element={<Blogs />} />
+            <Route path='/users' element={<Users />} />
+          </Routes>
         </>
       )}
     </div>
