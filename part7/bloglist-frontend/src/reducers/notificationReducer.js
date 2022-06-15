@@ -14,7 +14,7 @@ const notification = createSlice({
     createNotif(state, action) {
       return action.payload
     },
-    removeNotif(state, action) {
+    removeNotif() {
       return initialState
     },
   },
