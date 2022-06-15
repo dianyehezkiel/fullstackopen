@@ -23,7 +23,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
   const viewButtonLabel = visible ? 'hide' : 'view'
 
   const updateBlogLikes = () => {
-    updateLikes({ likes: blog.likes + 1 }, blog.id)
+    updateLikes(blog.id, { likes: blog.likes + 1 })
   }
 
   const removeBlog = () => {

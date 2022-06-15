@@ -9,20 +9,27 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { removeNotif, setNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { initBlogs, addBlog } from './reducers/blogsReducer'
+import {
+  initBlogs,
+  addBlog,
+  updateLikes,
+  deleteBlog,
+} from './reducers/blogsReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const blogs = useSelector(({ blogs }) => blogs)
+  const blogs = useSelector(({ blogs }) =>
+    [...blogs].sort((a, b) => b.likes - a.likes)
+  )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(initBlogs())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -65,40 +72,18 @@ const App = () => {
     dispatch(addBlog(blogObject))
   }
 
-  const updateLikes = async (likes, id) => {
-    console.log(likes, id)
-    // try {
-    //   const updatedBlog = await blogService.update(likes, id)
-    //   setBlogs(
-    //     blogs
-    //       .map((blog) => (blog.id === id ? updatedBlog : blog))
-    //       .sort((a, b) => b.likes - a.likes)
-    //   )
-    // } catch (exception) {
-    //   dispatch(setNotification(exception, 'error'))
-    // }
+  const handleLike = (id, likes) => {
+    dispatch(updateLikes(id, likes))
   }
 
-  const deleteBlog = async (blogObject) => {
-    console.log(blogObject)
-    // try {
-    //   if (
-    //     window.confirm(
-    //       `Remove blog "${blogObject.title}" by ${blogObject.author}?`
-    //     )
-    //   ) {
-    //     await blogService.remove(blogObject.id)
-    //     setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-    //     dispatch(
-    //       setNotification(
-    //         `Successfully remove "${blogObject.title}" by ${blogObject.author}`,
-    //         'success'
-    //       )
-    //     )
-    //   }
-    // } catch (exception) {
-    //   dispatch(setNotification(exception, 'error'))
-    // }
+  const handleDelete = async (blogObject) => {
+    if (
+      window.confirm(
+        `Remove blog "${blogObject.title}" by ${blogObject.author}?`
+      )
+    ) {
+      dispatch(deleteBlog(blogObject))
+    }
   }
 
   return (
@@ -127,8 +112,8 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              updateLikes={updateLikes}
-              deleteBlog={deleteBlog}
+              updateLikes={handleLike}
+              deleteBlog={handleDelete}
               owner={user.username}
             />
           ))}

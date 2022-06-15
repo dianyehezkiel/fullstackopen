@@ -11,11 +11,17 @@ const blog = createSlice({
     },
     appendBlog(state, action) {
       state.push(action.payload)
-    }
-  }
+    },
+    updateBlog(state, action) {
+      return state.map((b) => (b.id !== action.payload.id ? b : action.payload))
+    },
+    removeBlog(state, action) {
+      return state.filter((b) => b.id !== action.payload)
+    },
+  },
 })
 
-export const { setBlogs, appendBlog } = blog.actions
+export const { setBlogs, appendBlog, updateBlog, removeBlog } = blog.actions
 
 export const initBlogs = () => {
   return async (dispatch) => {
@@ -46,10 +52,39 @@ export const addBlog = (blogObject) => {
       )
     } catch (exception) {
       dispatch(
+        setNotification(`Failed to add blog: ${exception.message}`, 'error')
+      )
+    }
+  }
+}
+
+export const updateLikes = (id, likes) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.update(likes, id)
+      dispatch(updateBlog(updatedBlog))
+    } catch (exception) {
+      dispatch(
+        setNotification(`Failed to update likes: ${exception.message}`, 'error')
+      )
+    }
+  }
+}
+
+export const deleteBlog = (blogObject) => {
+  return async (dispatch) => {
+    try {
+      await blogService.remove(blogObject.id)
+      dispatch(removeBlog(blogObject.id))
+      dispatch(
         setNotification(
-          `Failed to add blog: ${exception.message}`,
-          'error'
+          `Successfully remove "${blogObject.title}" by ${blogObject.author}`,
+          'success'
         )
+      )
+    } catch (exception) {
+      dispatch(
+        setNotification(`Failed to remove blog: ${exception.message}`, 'error')
       )
     }
   }
