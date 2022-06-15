@@ -7,14 +7,16 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { removeNotif, setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [opsStatus, setOpsStatus] = useState('')
-  const [notifMessage, setNotifMessage] = useState(null)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,28 +50,16 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setNotifMessage(null)
-      setOpsStatus('')
+      dispatch(removeNotif())
     } catch (exception) {
-      setOpsStatus('error')
-      setNotifMessage('Incorrect Username or Password')
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
-      console.log(exception)
+      dispatch(setNotification('Incorrect Username or Password', 'error'))
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
-    setOpsStatus('success')
-    setNotifMessage('Successfully logged out')
-    setTimeout(() => {
-      setNotifMessage(null)
-      setOpsStatus('')
-    }, 5000)
+    dispatch(setNotification('Successfully logged out', 'success'))
   }
 
   const addBlog = async (blogObject) => {
@@ -77,21 +67,14 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog).sort((a, b) => b.likes - a.likes))
-      setOpsStatus('success')
-      setNotifMessage(
-        `Successfully added "${addedBlog.title}" by ${addedBlog.author}`
+      dispatch(
+        setNotification(
+          `Successfully added "${addedBlog.title}" by ${addedBlog.author}`,
+          'success'
+        )
       )
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
     } catch (exception) {
-      setOpsStatus('error')
-      setNotifMessage(exception)
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
+      dispatch(setNotification(exception, 'error'))
     }
   }
 
@@ -104,12 +87,7 @@ const App = () => {
           .sort((a, b) => b.likes - a.likes)
       )
     } catch (exception) {
-      setOpsStatus('error')
-      setNotifMessage(exception)
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
+      dispatch(setNotification(exception, 'error'))
     }
   }
 
@@ -122,22 +100,15 @@ const App = () => {
       ) {
         await blogService.remove(blogObject.id)
         setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-        setOpsStatus('success')
-        setNotifMessage(
-          `Successfully remove "${blogObject.title}" by ${blogObject.author}`
+        dispatch(
+          setNotification(
+            `Successfully remove "${blogObject.title}" by ${blogObject.author}`,
+            'success'
+          )
         )
-        setTimeout(() => {
-          setNotifMessage(null)
-          setOpsStatus('')
-        }, 5000)
       }
     } catch (exception) {
-      setOpsStatus('error')
-      setNotifMessage(exception)
-      setTimeout(() => {
-        setNotifMessage(null)
-        setOpsStatus('')
-      }, 5000)
+      dispatch(setNotification(exception, 'error'))
     }
   }
 
@@ -146,7 +117,7 @@ const App = () => {
       {user === null ? (
         <>
           <h2>Login to Application</h2>
-          <Notification type={opsStatus} message={notifMessage} />
+          <Notification />
           <LoginForm
             username={username}
             password={password}
@@ -158,7 +129,7 @@ const App = () => {
       ) : (
         <>
           <h2>blogs</h2>
-          <Notification type={opsStatus} message={notifMessage} />
+          <Notification />
           <UserHeader nameUser={user.name} handleLogout={handleLogout} />
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
