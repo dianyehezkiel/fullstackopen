@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { setNotification } from './notificationReducer'
 
-const blog = createSlice({
-  name: 'blog',
+const blogs = createSlice({
+  name: 'blogs',
   initialState: [],
   reducers: {
     setBlogs(state, action) {
@@ -21,7 +21,7 @@ const blog = createSlice({
   },
 })
 
-export const { setBlogs, appendBlog, updateBlog, removeBlog } = blog.actions
+export const { setBlogs, appendBlog, updateBlog, removeBlog } = blogs.actions
 
 export const initBlogs = () => {
   return async (dispatch) => {
@@ -31,7 +31,7 @@ export const initBlogs = () => {
     } catch (exception) {
       dispatch(
         setNotification(
-          `Failed to initiate blogs: ${exception.message}`,
+          `Failed to get blogs data: ${exception.message}`,
           'error'
         )
       )
@@ -90,4 +90,4 @@ export const deleteBlog = (blogObject) => {
   }
 }
 
-export default blog.reducer
+export default blogs.reducer
