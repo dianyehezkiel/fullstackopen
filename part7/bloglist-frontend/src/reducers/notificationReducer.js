@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 let timeoutId
 
 const initialState = {
-  message: '',
-  type: '',
+  message: null,
+  type: null,
 }
 
 const notification = createSlice({
