@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
+const Blog = ({ blog, updateLikes, deleteBlog, username }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -13,7 +13,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
 
   const showWhenVisible = { display: visible ? '' : 'none' }
   const showRemoveButton = {
-    display: blog.user.username === owner ? '' : 'none',
+    display: blog.user.username === username ? '' : 'none',
   }
 
   const toggleVisibility = () => {
