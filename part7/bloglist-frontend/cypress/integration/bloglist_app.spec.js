@@ -4,17 +4,17 @@
 // If you're unfamiliar with how Cypress works,
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
-describe('Blog App', function() {
-  beforeEach(function() {
+describe('Blog App', function () {
+  beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     cy.createUser({
       username: 'dianyehezkiel',
       name: 'Dian Yehezkiel',
-      password: 'pa55word'
+      password: 'pa55word',
     })
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     cy.contains('Login to Application')
     cy.contains('username')
     cy.contains('password')
@@ -23,8 +23,8 @@ describe('Blog App', function() {
     cy.get('#login-button').contains('Login')
   })
 
-  describe('Login', function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username-input').type('dianyehezkiel', { delay: 100 })
       cy.get('#password-input').type('pa55word', { delay: 100 })
       cy.get('#login-button').click()
@@ -32,7 +32,7 @@ describe('Blog App', function() {
       cy.contains('Welcome back, Dian Yehezkiel')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username-input').type('dianyehezkiel')
       cy.get('#password-input').type('wrong')
       cy.get('#login-button').click()
@@ -44,12 +44,12 @@ describe('Blog App', function() {
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.login({ username: 'dianyehezkiel', password: 'pa55word' })
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       cy.contains('new blog').click()
       cy.get('#blog-form').should('be.visible')
 
@@ -61,49 +61,46 @@ describe('Blog App', function() {
       cy.contains('This is a new blog created by cypress Cypress')
     })
 
-    describe('A blog exist', function() {
-      beforeEach(function() {
+    describe('A blog exist', function () {
+      beforeEach(function () {
         cy.createBlog({
           title: 'Creating a blog with cypress',
           author: 'Cypress',
-          url: 'https://cypress.io'
+          url: 'https://cypress.io',
         })
       })
 
-      it('A blog can be liked', function() {
+      it('A blog can be liked', function () {
         cy.contains('Creating a blog with cypress Cypress')
           .contains('view')
           .click()
 
         cy.contains('likes 0')
 
-        cy.contains('like')
-          .click()
+        cy.contains('like').click()
 
         cy.contains('likes 1')
       })
 
-      it('A blog can be removed by creator', function() {
+      it('A blog can be removed by creator', function () {
         cy.contains('Creating a blog with cypress Cypress')
           .contains('view')
           .click()
 
-        cy.contains('remove')
-          .click()
+        cy.contains('remove').click()
 
         cy.get('.blog-head')
           .contains('Creating a blog with cypress Cypress')
           .should('not.be.exist')
       })
 
-      it('A blog\'s remove button hidden from user that not create it', function() {
-        cy.contains('Logout')
-          .click()
+      it("A blog's remove button hidden from user that not create it", function () {
+        cy.contains('Logout').click()
 
         cy.createUser({
           username: 'otheruser',
           name: 'Other User',
-          password: 'otherpassword'
+          password: 'otherpassword',
         })
         cy.login({ username: 'otheruser', password: 'otherpassword' })
 
@@ -116,29 +113,24 @@ describe('Blog App', function() {
           .should('have.css', 'display', 'none')
       })
 
-      it('Blogs ordered according to likes (descending)', function() {
+      it('Blogs ordered according to likes (descending)', function () {
         cy.createBlog({
           title: 'Another blog',
           author: 'Cypress',
-          url: 'https://cypress.io'
+          url: 'https://cypress.io',
         })
 
-        cy.contains('Another blog Cypress')
-          .contains('view')
-          .click()
+        cy.contains('Another blog Cypress').contains('view').click()
 
-        cy.contains('Another blog Cypress')
-          .parent()
-          .contains('like')
-          .click()
+        cy.contains('Another blog Cypress').parent().contains('like').click()
         cy.wait(2000)
 
         cy.get('.blog').eq(0).should('contain', 'Another blog Cypress')
-        cy.get('.blog').eq(1).should('contain', 'Creating a blog with cypress Cypress')
+        cy.get('.blog')
+          .eq(1)
+          .should('contain', 'Creating a blog with cypress Cypress')
 
-        cy.contains('Another blog Cypress')
-          .contains('hide')
-          .click()
+        cy.contains('Another blog Cypress').contains('hide').click()
 
         cy.contains('Creating a blog with cypress Cypress')
           .contains('view')
@@ -156,7 +148,9 @@ describe('Blog App', function() {
           .click()
         cy.wait(2000)
 
-        cy.get('.blog').eq(0).should('contain', 'Creating a blog with cypress Cypress')
+        cy.get('.blog')
+          .eq(0)
+          .should('contain', 'Creating a blog with cypress Cypress')
         cy.get('.blog').eq(1).should('contain', 'Another blog Cypress')
       })
     })

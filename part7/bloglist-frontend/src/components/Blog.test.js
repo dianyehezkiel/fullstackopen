@@ -16,13 +16,13 @@ describe('<Blog />', () => {
       user: {
         name: 'sample user',
         username: 'sample',
-        id: '0987654321'
+        id: '0987654321',
       },
       url: 'example.com',
-      likes: 12
+      likes: 12,
     }
 
-    container = render(<Blog blog={blog} updateLikes={updateLikes}/>).container
+    container = render(<Blog blog={blog} updateLikes={updateLikes} />).container
   })
 
   test('renders content', () => {

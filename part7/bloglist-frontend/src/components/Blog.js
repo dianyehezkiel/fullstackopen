@@ -8,11 +8,13 @@ const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const showRemoveButton = { display: blog.user.username === owner ? '' : 'none' }
+  const showRemoveButton = {
+    display: blog.user.username === owner ? '' : 'none',
+  }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -33,12 +35,12 @@ const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
   }
 
   return (
-    <div style={blogStyle} className='blog'>
-      <div className='blog-head'>
+    <div style={blogStyle} className="blog">
+      <div className="blog-head">
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>{viewButtonLabel}</button>
       </div>
-      <div style={showWhenVisible} className='blog-detail'>
+      <div style={showWhenVisible} className="blog-detail">
         {blog.url}
         <br />
         likes {blog.likes}
@@ -46,7 +48,9 @@ const Blog = ({ blog, updateLikes, deleteBlog, owner }) => {
         <br />
         {blog.user.name}
         <br />
-        <button onClick={removeBlog} style={showRemoveButton}>remove</button>
+        <button onClick={removeBlog} style={showRemoveButton}>
+          remove
+        </button>
       </div>
     </div>
   )

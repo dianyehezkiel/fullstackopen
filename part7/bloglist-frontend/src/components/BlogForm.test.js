@@ -9,7 +9,7 @@ describe('<BlogForm />', () => {
     const newBlog = {
       title: 'sample title',
       author: 'sample author',
-      url: 'example.com'
+      url: 'example.com',
     }
 
     const createBlog = jest.fn()

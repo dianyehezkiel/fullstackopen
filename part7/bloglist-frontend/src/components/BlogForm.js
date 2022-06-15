@@ -22,41 +22,43 @@ const BlogForm = ({ createBlog }) => {
   return (
     <>
       <h3>create new</h3>
-      <form onSubmit={addBlog} id='blog-form'>
-      title:
+      <form onSubmit={addBlog} id="blog-form">
+        title:
         <input
-          id='title-input'
-          placeholder='Title...'
+          id="title-input"
+          placeholder="Title..."
           value={title}
           onChange={({ target }) => setTitle(target.value)}
           required
         />
-        <br/>
-      author:
+        <br />
+        author:
         <input
-          id='author-input'
-          placeholder='Author...'
+          id="author-input"
+          placeholder="Author..."
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
         />
-        <br/>
-      url:
+        <br />
+        url:
         <input
-          id='url-input'
-          placeholder='Url...'
+          id="url-input"
+          placeholder="Url..."
           value={url}
           onChange={({ target }) => setUrl(target.value)}
           required
         />
-        <br/>
-        <button id='create-button' type="submit">create</button>
+        <br />
+        <button id="create-button" type="submit">
+          create
+        </button>
       </form>
     </>
   )
 }
 
 BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

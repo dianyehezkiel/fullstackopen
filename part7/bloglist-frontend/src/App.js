@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const blogs = await blogService.getAll()
-      setBlogs( blogs.sort((a, b) => b.likes - a.likes ) )
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
     }
     fetchData()
   }, [])
@@ -39,12 +39,11 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedBloglistUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -77,13 +76,11 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const addedBlog = await blogService.create(blogObject)
-      setBlogs(
-        blogs
-          .concat(addedBlog)
-          .sort((a, b) => b.likes - a.likes )
-      )
+      setBlogs(blogs.concat(addedBlog).sort((a, b) => b.likes - a.likes))
       setOpsStatus('success')
-      setNotifMessage(`Successfully added "${addedBlog.title}" by ${addedBlog.author}`)
+      setNotifMessage(
+        `Successfully added "${addedBlog.title}" by ${addedBlog.author}`
+      )
       setTimeout(() => {
         setNotifMessage(null)
         setOpsStatus('')
@@ -98,16 +95,15 @@ const App = () => {
     }
   }
 
-
   const updateLikes = async (likes, id) => {
     try {
       const updatedBlog = await blogService.update(likes, id)
       setBlogs(
         blogs
-          .map((blog) => blog.id === id ? updatedBlog : blog)
-          .sort((a, b) => b.likes - a.likes )
+          .map((blog) => (blog.id === id ? updatedBlog : blog))
+          .sort((a, b) => b.likes - a.likes)
       )
-    } catch(exception) {
+    } catch (exception) {
       setOpsStatus('error')
       setNotifMessage(exception)
       setTimeout(() => {
@@ -119,17 +115,23 @@ const App = () => {
 
   const deleteBlog = async (blogObject) => {
     try {
-      if(window.confirm(`Remove blog "${blogObject.title}" by ${blogObject.author}?`)){
+      if (
+        window.confirm(
+          `Remove blog "${blogObject.title}" by ${blogObject.author}?`
+        )
+      ) {
         await blogService.remove(blogObject.id)
         setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
         setOpsStatus('success')
-        setNotifMessage(`Successfully remove "${blogObject.title}" by ${blogObject.author}`)
+        setNotifMessage(
+          `Successfully remove "${blogObject.title}" by ${blogObject.author}`
+        )
         setTimeout(() => {
           setNotifMessage(null)
           setOpsStatus('')
         }, 5000)
       }
-    } catch(exception) {
+    } catch (exception) {
       setOpsStatus('error')
       setNotifMessage(exception)
       setTimeout(() => {
@@ -141,8 +143,8 @@ const App = () => {
 
   return (
     <div>
-      {user === null
-        ? <>
+      {user === null ? (
+        <>
           <h2>Login to Application</h2>
           <Notification type={opsStatus} message={notifMessage} />
           <LoginForm
@@ -150,16 +152,18 @@ const App = () => {
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleLogin={handleLogin} />
+            handleLogin={handleLogin}
+          />
         </>
-        : <>
+      ) : (
+        <>
           <h2>blogs</h2>
           <Notification type={opsStatus} message={notifMessage} />
           <UserHeader nameUser={user.name} handleLogout={handleLogout} />
-          <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
-          {blogs.map((blog) =>
+          {blogs.map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
@@ -167,9 +171,9 @@ const App = () => {
               deleteBlog={deleteBlog}
               owner={user.username}
             />
-          )}
+          ))}
         </>
-      }
+      )}
     </div>
   )
 }
