@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route, useMatch } from 'react-router-dom'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
-import UserHeader from './components/UserHeader'
+import Header from './components/Header'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -71,9 +71,9 @@ const App = () => {
         </>
       ) : (
         <>
-          <h2>blogs</h2>
+          <Header handleLogout={handleLogout} />
+          <h2>blog app</h2>
           <Notification />
-          <UserHeader handleLogout={handleLogout} />
           <Routes>
             <Route path='/' element={<Blogs />} />
             <Route path='/users' element={<Users />} />
