@@ -61,7 +61,7 @@ export const addBlog = (blogObject) => {
 export const updateLikes = (id, likes) => {
   return async (dispatch) => {
     try {
-      const updatedBlog = await blogService.update(likes, id)
+      const updatedBlog = await blogService.update(id, likes)
       dispatch(updateBlog(updatedBlog))
     } catch (exception) {
       dispatch(

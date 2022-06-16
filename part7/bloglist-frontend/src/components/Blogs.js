@@ -4,9 +4,7 @@ import Blog from './Blog'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 import {
-  addBlog,
-  updateLikes,
-  deleteBlog
+  addBlog
 } from '../reducers/blogsReducer'
 import { initBlogs } from '../reducers/blogsReducer'
 
@@ -20,27 +18,12 @@ const Blogs = () => {
   const blogs = useSelector(({ blogs }) =>
     [...blogs].sort((a, b) => b.likes - a.likes)
   )
-  const username = useSelector(({ user }) => user.username)
 
   const blogFormRef = useRef()
 
   const handleCreate = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     dispatch(addBlog(blogObject))
-  }
-
-  const handleLike = (id, likes) => {
-    dispatch(updateLikes(id, likes))
-  }
-
-  const handleDelete = async (blogObject) => {
-    if (
-      window.confirm(
-        `Remove blog "${blogObject.title}" by ${blogObject.author}?`
-      )
-    ) {
-      dispatch(deleteBlog(blogObject))
-    }
   }
 
   return (
@@ -51,10 +34,9 @@ const Blogs = () => {
       {blogs.map((blog) => (
         <Blog
           key={blog.id}
-          blog={blog}
-          updateLikes={handleLike}
-          deleteBlog={handleDelete}
-          username={username}
+          id={blog.id}
+          title={blog.title}
+          author={blog.author}
         />
       ))}
     </div>

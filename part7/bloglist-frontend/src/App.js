@@ -11,10 +11,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from './reducers/userReducer'
 import Users from './components/Users'
 import User from './components/User'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const user = useSelector(({ user }) => user)
   const users = useSelector(({ users }) => users)
+  const blogs = useSelector(({ blogs }) => blogs)
 
   const dispatch = useDispatch()
 
@@ -49,9 +51,14 @@ const App = () => {
     dispatch(setNotification('Successfully logged out', 'success'))
   }
 
-  const match = useMatch('/users/:id')
-  const selectedUser = match
-    ? users.find((u) => u.id === match.params.id)
+  const usersMatch = useMatch('/users/:id')
+  const selectedUser = usersMatch
+    ? users.find((u) => u.id === usersMatch.params.id)
+    : null
+
+  const blogsMatch = useMatch('/blogs/:id')
+  const selectedBlog = blogsMatch
+    ? blogs.find((b) => b.id === blogsMatch.params.id)
     : null
 
   return (
@@ -71,6 +78,12 @@ const App = () => {
             <Route path='/' element={<Blogs />} />
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<User user={selectedUser} />} />
+            <Route path='/blogs/:id' element={
+              <BlogView
+                blog={selectedBlog}
+                username={user.username}
+              />}
+            />
           </Routes>
         </>
       )}
