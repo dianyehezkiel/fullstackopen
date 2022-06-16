@@ -71,6 +71,19 @@ export const updateLikes = (id, likes) => {
   }
 }
 
+export const addComment = (id, comment) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.comment(id, comment)
+      dispatch(updateBlog(updatedBlog))
+    } catch (exception) {
+      dispatch(
+        setNotification(`Failed to comment: ${exception.message}`, 'error')
+      )
+    }
+  }
+}
+
 export const deleteBlog = (blogObject) => {
   return async (dispatch) => {
     try {

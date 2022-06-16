@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { updateLikes, deleteBlog } from '../reducers/blogsReducer'
+import Comments from './Comments'
 
 const BlogView = ({ blog, username }) => {
   const dispatch = useDispatch()
@@ -45,7 +46,6 @@ const BlogView = ({ blog, username }) => {
       navigate('/')
     }
   }
-  console.log(blog)
 
   return (
     <div>
@@ -56,15 +56,7 @@ const BlogView = ({ blog, username }) => {
       <button onClick={handleRemove} style={showRemoveButton}>
         remove
       </button>
-      <h4>comments</h4>
-      {blog.comments.length === 0
-        ? <p><i>no comment yet</i></p>
-        : <ul>
-          {blog.comments.map((comment, index) => (
-            <li key={blog.id + index}>{comment}</li>
-          ))}
-        </ul>
-      }
+      <Comments id={blog.id} comments={blog.comments} />
     </div>
   )
 }
