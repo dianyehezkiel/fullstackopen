@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { FormGroup, Typography, TextField, Button } from '@mui/material'
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
@@ -21,38 +22,46 @@ const BlogForm = ({ createBlog }) => {
 
   return (
     <>
-      <h3>create new</h3>
-      <form onSubmit={addBlog} id="blog-form">
-        title:
-        <input
+      <Typography
+        sx={{
+          mb: '8px',
+        }}
+        variant="button"
+        component="h3"
+      >
+        Create New
+      </Typography>
+      <FormGroup id="blog-form" sx={{ width: { xs: '100%', md: '50%' } }}>
+        <TextField
           id="title-input"
-          placeholder="Title..."
+          label="Title"
+          variant="standard"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
-          required
         />
-        <br />
-        author:
-        <input
+        <TextField
           id="author-input"
-          placeholder="Author..."
+          label="Author"
+          variant="standard"
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
         />
-        <br />
-        url:
-        <input
+        <TextField
           id="url-input"
-          placeholder="Url..."
+          label="URL"
+          variant="standard"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
-          required
         />
-        <br />
-        <button id="create-button" type="submit">
-          create
-        </button>
-      </form>
+        <Button
+          sx={{ mt: '8px' }}
+          id="create-button"
+          variant="contained"
+          onClick={addBlog}
+        >
+          Create
+        </Button>
+      </FormGroup>
     </>
   )
 }

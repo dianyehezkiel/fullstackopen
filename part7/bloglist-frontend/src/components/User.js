@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const User = ({ user }) => {
-  const navigate =  useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!user) {
@@ -17,18 +17,18 @@ const User = ({ user }) => {
   return (
     <div>
       <h3>{user.name}</h3>
-      {user.blogs.length !== 0
-        ? <>
+      {user.blogs.length !== 0 ? (
+        <>
           <b>added blogs</b>
           <ul>
             {user.blogs.map((blog) => (
-              <li key={blog.id}>
-                {blog.title}
-              </li>
+              <li key={blog.id}>{blog.title}</li>
             ))}
           </ul>
         </>
-        : <b>no blog added yet</b>}
+      ) : (
+        <b>no blog added yet</b>
+      )}
     </div>
   )
 }

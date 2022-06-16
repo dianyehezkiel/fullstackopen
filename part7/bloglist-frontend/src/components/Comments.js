@@ -23,14 +23,17 @@ const Comments = ({ id, comments }) => {
         />
         <button type="submit">add comment</button>
       </form>
-      {comments.length === 0
-        ? <p><i>no comment yet</i></p>
-        : <ul>
+      {comments.length === 0 ? (
+        <p>
+          <i>no comment yet</i>
+        </p>
+      ) : (
+        <ul>
           {comments.map((comment, index) => (
             <li key={id + index}>{comment}</li>
           ))}
         </ul>
-      }
+      )}
     </>
   )
 }

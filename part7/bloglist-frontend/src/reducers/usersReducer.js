@@ -9,7 +9,7 @@ const users = createSlice({
     setUsers(state, action) {
       return action.payload
     },
-  }
+  },
 })
 
 export const { setUsers } = users.actions

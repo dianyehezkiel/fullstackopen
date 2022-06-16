@@ -12,6 +12,7 @@ import { setUser } from './reducers/userReducer'
 import Users from './components/Users'
 import User from './components/User'
 import BlogView from './components/BlogView'
+import { Container, AppBar, Stack } from '@mui/material'
 
 const App = () => {
   const user = useSelector(({ user }) => user)
@@ -70,22 +71,32 @@ const App = () => {
           <LoginForm handleLogin={handleLogin} />
         </>
       ) : (
-        <>
-          <Header handleLogout={handleLogout} />
-          <h2>blog app</h2>
-          <Notification />
-          <Routes>
-            <Route path='/' element={<Blogs />} />
-            <Route path='/users' element={<Users />} />
-            <Route path='/users/:id' element={<User user={selectedUser} />} />
-            <Route path='/blogs/:id' element={
-              <BlogView
-                blog={selectedBlog}
-                username={user.username}
-              />}
-            />
-          </Routes>
-        </>
+        <Stack spacing={8}>
+          <AppBar>
+            <Container disableGutters>
+              <Header handleLogout={handleLogout} />
+            </Container>
+          </AppBar>
+          <div>
+            <Container>
+              <Notification />
+              <Routes>
+                <Route path="/" element={<Blogs />} />
+                <Route path="/users" element={<Users />} />
+                <Route
+                  path="/users/:id"
+                  element={<User user={selectedUser} />}
+                />
+                <Route
+                  path="/blogs/:id"
+                  element={
+                    <BlogView blog={selectedBlog} username={user.username} />
+                  }
+                />
+              </Routes>
+            </Container>
+          </div>
+        </Stack>
       )}
     </div>
   )

@@ -23,24 +23,15 @@ const BlogView = ({ blog, username }) => {
   }
 
   const handleLike = () => {
-    dispatch(
-      updateLikes(
-        blog.id,
-        { likes: blog.likes + 1 }
-      )
-    )
+    dispatch(updateLikes(blog.id, { likes: blog.likes + 1 }))
   }
 
   const handleRemove = async () => {
-    if (
-      window.confirm(
-        `Remove blog "${blog.title}" by ${blog.author}?`
-      )
-    ) {
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
       const blogObject = {
         id: blog.id,
         title: blog.title,
-        author: blog.author
+        author: blog.author,
       }
       dispatch(deleteBlog(blogObject))
       navigate('/')
@@ -50,9 +41,12 @@ const BlogView = ({ blog, username }) => {
   return (
     <div>
       <h3>{blog.title}</h3>
-      <a href={blog.url}>{blog.url}</a><br />
-      {blog.likes} likes <button onClick={handleLike}> Like</button><br />
-      added by {blog.user.name}<br />
+      <a href={blog.url}>{blog.url}</a>
+      <br />
+      {blog.likes} likes <button onClick={handleLike}> Like</button>
+      <br />
+      added by {blog.user.name}
+      <br />
       <button onClick={handleRemove} style={showRemoveButton}>
         remove
       </button>

@@ -3,10 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Blog from './Blog'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
-import {
-  addBlog
-} from '../reducers/blogsReducer'
+import { addBlog } from '../reducers/blogsReducer'
 import { initBlogs } from '../reducers/blogsReducer'
+import { List } from '@mui/material'
 
 const Blogs = () => {
   const dispatch = useDispatch()
@@ -31,14 +30,16 @@ const Blogs = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={handleCreate} />
       </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          id={blog.id}
-          title={blog.title}
-          author={blog.author}
-        />
-      ))}
+      <List>
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            id={blog.id}
+            title={blog.title}
+            author={blog.author}
+          />
+        ))}
+      </List>
     </div>
   )
 }
