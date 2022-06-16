@@ -53,6 +53,32 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   return response.status(403).end();
 });
 
+blogsRouter.post('/:id/comments', middleware.userExtractor, async (request, response) => {
+  const { user, body } = request;
+  const blog = await Blog.findById(request.params.id);
+  if (!blog) {
+    return response.status(404).json({
+      error: 'Can not find blog',
+    });
+  }
+
+  if (user._id) {
+    const comments = {
+      comments: blog.comments.concat(body.comment),
+    };
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      comments,
+      { new: true },
+    ).populate('user', { username: 1, name: 1, id: 1 });
+
+    return response.json(updatedBlog);
+  }
+
+  return response.status(403).end();
+});
+
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const { user } = request;
 
