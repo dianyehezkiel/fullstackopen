@@ -12,7 +12,7 @@ import { setUser } from './reducers/userReducer'
 import Users from './components/Users'
 import User from './components/User'
 import BlogView from './components/BlogView'
-import { Container, AppBar, Stack } from '@mui/material'
+import { Container, AppBar, Stack, Box, Grid } from '@mui/material'
 
 const App = () => {
   const user = useSelector(({ user }) => user)
@@ -63,13 +63,22 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <Box>
       {user === null ? (
-        <>
-          <h2>Login to Application</h2>
+        <Box>
           <Notification />
-          <LoginForm handleLogin={handleLogin} />
-        </>
+          <Grid
+            sx={{
+              height: '90vh',
+            }}
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <LoginForm handleLogin={handleLogin} />
+          </Grid>
+        </Box>
       ) : (
         <Stack spacing={8}>
           <AppBar>
@@ -77,7 +86,7 @@ const App = () => {
               <Header handleLogout={handleLogout} />
             </Container>
           </AppBar>
-          <div>
+          <Box>
             <Container>
               <Notification />
               <Routes>
@@ -95,10 +104,10 @@ const App = () => {
                 />
               </Routes>
             </Container>
-          </div>
+          </Box>
         </Stack>
       )}
-    </div>
+    </Box>
   )
 }
 

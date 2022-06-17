@@ -1,3 +1,4 @@
+import { Box, Button, Paper, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -11,29 +12,68 @@ const LoginForm = ({ handleLogin }) => {
   }
 
   return (
-    <form onSubmit={onSubmit} id="login-form">
-      <div>
-        username
-        <input
+    <Box component={Paper} sx={{ p: '16px', maxWidth: '300px' }}>
+      <Typography component="h1" variant="h5" align="center">
+        Login to Blog App
+      </Typography>
+      <form onSubmit={onSubmit} id="login-form">
+        <TextField
+          sx={{
+            my: '4px',
+          }}
           id="username-input"
+          label="Username"
+          variant="outlined"
+          fullWidth={true}
           type="text"
-          name="Username"
-          onChange={(e) => setUsername(e.target.value)}
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
         />
-      </div>
-      <div>
-        password
-        <input
+        {/* <div>
+          username
+          <input
+            id="username-input"
+            type="text"
+            name="Username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div> */}
+        <TextField
+          sx={{
+            my: '4px',
+          }}
           id="password-input"
+          label="Password"
+          variant="outlined"
+          fullWidth={true}
           type="password"
-          name="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
         />
-      </div>
-      <button id="login-button" type="submit">
-        Login
-      </button>
-    </form>
+        {/* <div>
+          password
+          <input
+            id="password-input"
+            type="password"
+            name="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div> */}
+        <Button
+          sx={{
+            my: '4px',
+          }}
+          variant="contained"
+          type="submit"
+          fullWidth={true}
+        >
+          Login
+        </Button>
+        {/* <button id="login-button" type="submit">
+          Login
+        </button> */}
+      </form>
+    </Box>
   )
 }
 
