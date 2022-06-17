@@ -8,7 +8,7 @@ const Notification = () => {
     return null
   }
 
-  return <Alert severity={notif.type}>{notif.message}</Alert>
+  return <Alert sx={{ my: '8px' }} severity={notif.type}>{notif.message}</Alert>
 }
 
 export default Notification
