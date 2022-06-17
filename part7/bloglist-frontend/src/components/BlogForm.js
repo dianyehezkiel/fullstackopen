@@ -58,7 +58,7 @@ const BlogForm = ({ createBlog }) => {
             sx={{ mt: '8px' }}
             id="create-button"
             variant="contained"
-            type='submit'
+            type="submit"
           >
             Create
           </Button>
