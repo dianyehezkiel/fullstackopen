@@ -1,6 +1,12 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import {
+  Box, Button, Link, Typography,
+} from '@mui/material'
+import LinkIcon from '@mui/icons-material/Link'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
+import PersonIcon from '@mui/icons-material/Person'
 import { updateLikes, deleteBlog } from '../reducers/blogsReducer'
 import Comments from './Comments'
 
@@ -39,19 +45,70 @@ const BlogView = ({ blog, username }) => {
   }
 
   return (
-    <div>
-      <h3>{blog.title}</h3>
-      <a href={blog.url}>{blog.url}</a>
-      <br />
-      {blog.likes} likes <button onClick={handleLike}> Like</button>
-      <br />
-      added by {blog.user.name}
-      <br />
-      <button onClick={handleRemove} style={showRemoveButton}>
-        remove
-      </button>
+    <Box>
+      <Typography
+        variant='h6'
+        component='h3'
+      >
+        {blog.title}
+      </Typography>
+      {/* <h3>{blog.title}</h3> */}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <LinkIcon sx={{ mr: '4px' }} color='primary'/>
+        <Link
+          variant='body2'
+          component='a'
+          href={blog.url}
+          underline='none'
+          rel='noopener'
+          target='_blank'
+          noWrap='true'
+        >
+          {blog.url}
+        </Link>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <ThumbUpAltIcon sx={{ mr: '4px' }} color='primary'/>
+        <Typography
+          mr='4px'
+          variant='body2'
+          component='p'
+          noWrap='true'
+        >
+          {blog.likes} likes
+        </Typography>
+        <Button
+          color='primary'
+          component='button'
+          variant='contained'
+          onClick={handleLike}
+          size='small'
+        >
+          Like
+        </Button>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <PersonIcon sx={{ mr: '4px' }} color='primary' />
+        <Typography
+          variant='body2'
+          component='p'
+          noWrap='true'
+        >
+          added by {blog.user.name}
+        </Typography>
+      </Box>
+      <Button
+        sx={showRemoveButton}
+        color='error'
+        component='button'
+        variant='contained'
+        onClick={handleRemove}
+        size='small'
+      >
+        Remove
+      </Button>
       <Comments id={blog.id} comments={blog.comments} />
-    </div>
+    </Box>
   )
 }
 
