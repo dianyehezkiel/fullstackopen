@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Alert } from '@mui/material'
+import { Alert, Snackbar } from '@mui/material'
 
 const Notification = () => {
   const notif = useSelector(({ notification }) => notification)
@@ -9,9 +9,14 @@ const Notification = () => {
   }
 
   return (
-    <Alert sx={{ my: '8px' }} severity={notif.type}>
-      {notif.message}
-    </Alert>
+    <Snackbar
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      open={true}
+    >
+      <Alert variant="filled" sx={{ my: '8px' }} severity={notif.type}>
+        {notif.message}
+      </Alert>
+    </Snackbar>
   )
 }
 
