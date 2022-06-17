@@ -1,3 +1,4 @@
+import { Box, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -15,21 +16,36 @@ const User = ({ user }) => {
   }
 
   return (
-    <div>
-      <h3>{user.name}</h3>
+    <Box>
+      <Typography component="h3" variant="h6">
+        {user.name}
+      </Typography>
       {user.blogs.length !== 0 ? (
-        <>
-          <b>added blogs</b>
-          <ul>
-            {user.blogs.map((blog) => (
-              <li key={blog.id}>{blog.title}</li>
+        <Box>
+          <Typography
+            sx={{
+              fontWeight: 'bold',
+              mt: '16px',
+            }}
+            component="p"
+            variant="body1"
+          >
+            Added blogs
+          </Typography>
+          <List>
+            {user.blogs.map((blog, index) => (
+              <ListItem key={blog.id}>
+                <ListItemText>{`${index + 1}. ${blog.title}`}</ListItemText>
+              </ListItem>
             ))}
-          </ul>
-        </>
+          </List>
+        </Box>
       ) : (
-        <b>no blog added yet</b>
+        <Typography component="i" variant="body2">
+          No blog added yet
+        </Typography>
       )}
-    </div>
+    </Box>
   )
 }
 
