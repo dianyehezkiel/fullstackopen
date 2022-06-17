@@ -46,16 +46,17 @@ const Users = () => {
           </TableHead>
           <TableBody>
             {users.map((user) => (
-              <TableRow
-                hover
-                key={user.id}
-                component={Link}
-                to={`/users/${user.id}`}
-              >
+              <TableRow hover key={user.id}>
                 <TableCell>
-                  <Typography component="p" variant="body2">
-                    {user.name}
-                  </Typography>
+                  <Box
+                    sx={{ textDecoration: 'none' }}
+                    component={Link}
+                    to={`/users/${user.id}`}
+                  >
+                    <Typography component="p" variant="body2">
+                      {user.name}
+                    </Typography>
+                  </Box>
                 </TableCell>
                 <TableCell align="center">
                   <Typography component="p" variant="body2">
