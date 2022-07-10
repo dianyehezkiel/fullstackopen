@@ -1,9 +1,9 @@
 const Books = (props) => {
-  if (!props.show) {
+  if (!props.show || props.loading) {
     return null
   }
 
-  const books = []
+  const books = props.data.allBooks
 
   return (
     <div>
