@@ -1,3 +1,5 @@
+import BirthForm from "./BirthForm"
+
 const Authors = (props) => {
   if (!props.show || props.loading) {
     return null
@@ -24,6 +26,8 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      
+      <BirthForm />
     </div>
   )
 }
