@@ -5,6 +5,10 @@ const Authors = (props) => {
     return null
   }
 
+  if (!props.data) {
+    return <i>no data yet...</i>
+  }
+
   const authors = props.data.allAuthors
 
   return (

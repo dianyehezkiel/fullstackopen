@@ -3,6 +3,10 @@ const Books = (props) => {
     return null
   }
 
+  if (!props.data) {
+    return <i>no data yet...</i>
+  }
+  
   const books = props.data.allBooks
 
   return (
