@@ -8,6 +8,37 @@ interface Result {
   average: number
 }
 
+// deh = daily exercise hours
+interface dehAndTarget {
+  deh: Array<number>,
+  target: number
+}
+
+const parseExercisesArguments = (args: Array<string>): dehAndTarget => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+
+  if (isNaN(Number(args[2]))) {
+    throw new Error('Provided values were not numbers!');
+  }
+
+  let deh: Array<number> = [];
+
+  for (let i = 3; i < args.length; i++) {
+    const n = Number(args[i]);
+
+    if (isNaN(n)) {
+      throw new Error('Provided values were not numbers!');
+    }
+
+    deh.push(n);
+  }
+
+  return {
+    deh,
+    target: Number(args[2])
+  }
+}
+
 const calculateExercise = (deh: Array<number>, target: number): Result => {
   const periodLength = deh.length
   const trainingDays = deh.filter((h) => h > 0).length
@@ -43,4 +74,14 @@ const calculateExercise = (deh: Array<number>, target: number): Result => {
   }
 }
 
-console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+  const { deh, target } = parseExercisesArguments(process.argv);
+  console.log(calculateExercise(deh, target));
+} catch (error: unknown) {
+  let errorMessage = 'Something wrong happened.'
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+
+  console.log(errorMessage);
+}
