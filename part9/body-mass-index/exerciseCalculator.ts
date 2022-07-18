@@ -21,7 +21,7 @@ const parseExercisesArguments = (args: Array<string>): dehAndTarget => {
     throw new Error('Provided values were not numbers!');
   }
 
-  let deh: Array<number> = [];
+  const deh: Array<number> = [];
 
   for (let i = 3; i < args.length; i++) {
     const n = Number(args[i]);
@@ -36,15 +36,15 @@ const parseExercisesArguments = (args: Array<string>): dehAndTarget => {
   return {
     deh,
     target: Number(args[2])
-  }
-}
+  };
+};
 
 const calculateExercise = (deh: Array<number>, target: number): Result => {
-  const periodLength = deh.length
-  const trainingDays = deh.filter((h) => h > 0).length
-  const average = deh.reduce((r, h) => r + h, 0) / periodLength
-  const success = average > target
-  const successRate = average / target
+  const periodLength = deh.length;
+  const trainingDays = deh.filter((h) => h > 0).length;
+  const average = deh.reduce((r, h) => r + h, 0) / periodLength;
+  const success = average > target;
+  const successRate = average / target;
   let rating: number;
   let ratingDescription: string;
 
@@ -73,14 +73,14 @@ const calculateExercise = (deh: Array<number>, target: number): Result => {
     ratingDescription,
     target,
     average
-  }
-}
+  };
+};
 
 try {
   const { deh, target } = parseExercisesArguments(process.argv);
   console.log(calculateExercise(deh, target));
 } catch (error: unknown) {
-  let errorMessage = 'Something wrong happened.'
+  let errorMessage = 'Something wrong happened.';
   if (error instanceof Error) {
     errorMessage += ' Error: ' + error.message;
   }
