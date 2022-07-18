@@ -45,8 +45,8 @@ const calculateExercise = (deh: Array<number>, target: number): Result => {
   const average = deh.reduce((r, h) => r + h, 0) / periodLength
   const success = average > target
   const successRate = average / target
-  let rating;
-  let ratingDescription;
+  let rating: number;
+  let ratingDescription: string;
 
   switch (true) {
     case (successRate < 0.5):
@@ -61,6 +61,8 @@ const calculateExercise = (deh: Array<number>, target: number): Result => {
       rating = 3;
       ratingDescription = 'Congratulations! You are on target.';
       break;
+    default:
+      throw new Error('Something wrong when calculating exercises!');
   }
 
   return {
