@@ -39,7 +39,7 @@ const parseExercisesArguments = (args: Array<string>): dehAndTarget => {
   };
 };
 
-const calculateExercise = (deh: Array<number>, target: number): Result => {
+export const calculateExercise = (deh: Array<number>, target: number): Result => {
   const periodLength = deh.length;
   const trainingDays = deh.filter((h) => h > 0).length;
   const average = deh.reduce((r, h) => r + h, 0) / periodLength;
