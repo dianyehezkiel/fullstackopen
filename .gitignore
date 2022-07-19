@@ -9,6 +9,7 @@
 # production
 */*/build
 !part3/phonebook-backend/build
+!part9/patientor-be/build
 
 # misc
 */*/.DS_Store
