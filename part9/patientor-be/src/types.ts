@@ -1,7 +1,21 @@
+export type PatientFormFields = {
+  name: unknown,
+  dateOfBirth: unknown,
+  ssn: unknown,
+  gender: unknown,
+  occupation: unknown,
+};
+
 export interface Diagnose {
   code: string,
   name: string,
   latin?: string,
+}
+
+export enum Gender {
+  Female = 'female',
+  Male = 'male',
+  Other = 'other',
 }
 
 export interface Patient {
@@ -9,7 +23,7 @@ export interface Patient {
   name: string,
   dateOfBirth: string,
   ssn: string,
-  gender: string,
+  gender: Gender,
   occupation: string,
 }
 
