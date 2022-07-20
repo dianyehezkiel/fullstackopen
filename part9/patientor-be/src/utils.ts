@@ -1,4 +1,4 @@
-import { NewPatient, Gender, PatientFormFields } from "./types";
+import { NewPatient, Gender, PatientFormFields, Entry } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -37,12 +37,15 @@ const parseGender = (gender: unknown): Gender => {
 };
 
 const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: PatientFormFields): NewPatient => {
+  const entries: Entry[] = [];
+
   const newPatient: NewPatient = {
     name: parseString(name, 'name'),
     dateOfBirth: parseDob(dateOfBirth),
     ssn: parseString(ssn, 'SSN'),
     gender: parseGender(gender),
     occupation: parseString(occupation, 'occupation'),
+    entries,
   };
 
   return newPatient;

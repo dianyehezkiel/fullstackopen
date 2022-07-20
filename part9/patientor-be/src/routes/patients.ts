@@ -7,7 +7,18 @@ import toNewPatient from '../utils';
 const patientsRouter = express.Router();
 
 patientsRouter.get('/', (_reg, res) => {
-  res.send(patientService.getNoSsnPatients());
+  res.send(patientService.getPublicPatients());
+});
+
+patientsRouter.get('/:id', (req, res) => {
+  const id = req.params.id;
+  const patient = patientService.getPatientById(id);
+
+  if (!patient) {
+    res.status(404).send(`Cannot find patient with id: ${id}`);
+  } else {
+    res.send(patient);
+  }
 });
 
 patientsRouter.post('/', (req, res) => {
