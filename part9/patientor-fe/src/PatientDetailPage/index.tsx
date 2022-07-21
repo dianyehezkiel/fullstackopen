@@ -7,7 +7,7 @@ import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import { apiBaseUrl } from "../constants";
 import { selectPatient, useStateValue } from "../state";
-import { Entry, Patient } from "../types";
+import { Entry, Patient, Gender } from "../types";
 
 const PatientDetail = () => {
   const [{ selectedPatient, diagnoses }, dispatch] = useStateValue();
@@ -35,14 +35,17 @@ const PatientDetail = () => {
     void getPatient();
   });
 
-  const genderIcon = (gender: string) => {
-    if (gender === 'male') {
-      return <MaleIcon />;
+  const genderIcon = (gender: Gender) => {
+    switch (gender) {
+      case "male":
+        return <MaleIcon />;
+      case "female":
+        return <FemaleIcon />;
+      case "other":
+        return <TransgenderIcon />;
+      default:
+        return null;
     }
-    if (gender === 'female') {
-      return <FemaleIcon />;
-    }
-    return <TransgenderIcon />;
   };
 
   const diagnosisCodeList = (diagnosisCodes?: string[]) => {
