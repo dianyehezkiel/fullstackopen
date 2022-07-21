@@ -10,12 +10,18 @@ export enum Gender {
   Other = "other"
 }
 
+export interface Diagnose {
+  code: string;
+  name: string;
+  latin?: string;
+}
+
 interface BaseEntry {
   id: string;
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?: string[];
+  diagnosisCodes?: Array<Diagnose['code']>;
 }
 
 interface Discharge {

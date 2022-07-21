@@ -10,7 +10,7 @@ import { selectPatient, useStateValue } from "../state";
 import { Entry, Patient } from "../types";
 
 const PatientDetail = () => {
-  const [{ selectedPatient }, dispatch] = useStateValue();
+  const [{ selectedPatient, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   React.useEffect(() => {
@@ -54,7 +54,9 @@ const PatientDetail = () => {
       <ul style={{ marginTop: "4px", marginBottom: "4px" }}>
         {diagnosisCodes.map((code) => {
           return (
-            <li key={code}>{code}</li>
+            <li key={code}>
+              <Typography>{code} {diagnoses[code] ? diagnoses[code].name : null}</Typography>
+            </li>
           );
         })}
       </ul>
@@ -68,9 +70,7 @@ const PatientDetail = () => {
           <Typography>
             <i>{entry.date}</i> | {entry.description}
           </Typography>
-          <Typography>
             {diagnosisCodeList(entry.diagnosisCodes)}
-          </Typography>
         </Box>
       );
     });
