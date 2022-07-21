@@ -7,7 +7,7 @@ import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import { apiBaseUrl } from "../constants";
 import { selectPatient, useStateValue } from "../state";
-import { Patient } from "../types";
+import { Entry, Patient } from "../types";
 
 const PatientDetail = () => {
   const [{ selectedPatient }, dispatch] = useStateValue();
@@ -45,6 +45,37 @@ const PatientDetail = () => {
     return <TransgenderIcon />;
   };
 
+  const diagnosisCodeList = (diagnosisCodes?: string[]) => {
+    if (!diagnosisCodes) {
+      return null;
+    }
+
+    return (
+      <ul style={{ marginTop: "4px", marginBottom: "4px" }}>
+        {diagnosisCodes.map((code) => {
+          return (
+            <li key={code}>{code}</li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const entryList = (entries: Entry[]) => {
+    return entries.map((entry) => {
+      return (
+        <Box key={entry.id} style={{ marginBottom: "8px" }}>
+          <Typography>
+            <i>{entry.date}</i> | {entry.description}
+          </Typography>
+          <Typography>
+            {diagnosisCodeList(entry.diagnosisCodes)}
+          </Typography>
+        </Box>
+      );
+    });
+  };
+
   if (!selectedPatient) {
     return <Typography variant="h6" style={{marginTop: "16px", marginBottom: "16px"}}>
       Patient does not exist!
@@ -52,11 +83,15 @@ const PatientDetail = () => {
   }
 
   return <Box>
-    <Typography variant="h5" style={{marginTop: "16px", marginBottom: "16px"}}>
+    <Typography variant="h5" style={{marginTop: "24px", marginBottom: "8px"}}>
       {selectedPatient.name} {genderIcon(selectedPatient.gender)}
     </Typography>
     <Typography>SSN: {selectedPatient.ssn}</Typography>
     <Typography>Occupation: {selectedPatient.occupation}</Typography>
+    <Typography variant="h6" style={{marginTop: "16px", marginBottom: "8px"}}>
+      Entries:
+    </Typography>
+    {entryList(selectedPatient.entries)}
   </Box>;
 };
 
