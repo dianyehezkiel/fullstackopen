@@ -6,7 +6,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { selectPatient, useStateValue } from "../state";
 import { Patient } from "../types";
 
 const PatientDetail = () => {
@@ -25,11 +25,8 @@ const PatientDetail = () => {
         }
         
         const { data: patient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-        if (!patient) {
-          dispatch({ type: "SELECT_PATIENT", payload: undefined });
-        }
-  
-        dispatch({ type: "SELECT_PATIENT", payload: patient });
+
+        dispatch(selectPatient(patient));
         return;
       } catch (e) {
         console.error(e);
@@ -49,7 +46,9 @@ const PatientDetail = () => {
   };
 
   if (!selectedPatient) {
-    return <p>{`Patient doesn't exist`}</p>;
+    return <Typography variant="h6" style={{marginTop: "16px", marginBottom: "16px"}}>
+      Patient does not exist!
+    </Typography>;
   }
 
   return <Box>
