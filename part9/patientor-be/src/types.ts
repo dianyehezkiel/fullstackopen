@@ -6,6 +6,24 @@ export type PatientFormFields = {
   occupation: unknown;
 };
 
+export type EntryFormFields = {
+  type: unknown;
+  description: unknown;
+  date: unknown;
+  specialist: unknown;
+  diagnosisCodes: unknown;
+  discharge: {
+    criteria: unknown;
+    date: unknown;
+  };
+  employerName: unknown;
+  sickLeave: {
+    startDate: unknown;
+    endDate: unknown;
+  };
+  healthCheckRating: unknown;
+};
+
 export interface Diagnose {
   code: string;
   name: string;
@@ -26,7 +44,7 @@ interface BaseEntry {
   diagnosisCodes?: Array<Diagnose['code']>;
 }
 
-interface Discharge {
+export interface Discharge {
   date: string;
   criteria: string;
 }
@@ -36,7 +54,7 @@ interface HospitalEntry extends BaseEntry {
   discharge: Discharge
 }
 
-interface SickLeaveDate {
+export interface SickLeaveDate {
   startDate: string;
   endDate: string;
 }
@@ -77,3 +95,7 @@ export interface Patient {
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >;
 
 export type NewPatient = Omit<Patient, 'id'>;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
