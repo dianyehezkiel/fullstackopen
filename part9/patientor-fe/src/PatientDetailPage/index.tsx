@@ -1,4 +1,4 @@
-import { Box, Typography } from "@material-ui/core";
+import {Box, Button, Typography} from "@material-ui/core";
 import axios from "axios";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -6,20 +6,24 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import { apiBaseUrl } from "../constants";
-import { selectPatient, useStateValue } from "../state";
+import {addEntry, selectPatient, useStateValue} from "../state";
 import { Entry, Patient, Gender } from "../types";
 import EntryDetail from "../components/EntryDetail";
+import AddEntryModal from "../addEntryModal";
+import {EntryFormValues} from "../addEntryModal/addEntryForm";
 
 const PatientDetail = () => {
   const [{ selectedPatient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+  if (!id) {
+    return null;
+  }
+
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>();
 
   React.useEffect(() => {
     const getPatient = async () => {
-      if (!id) {
-        throw new Error("No id provided");
-      }
-
       try {
         if (selectedPatient && id === selectedPatient.id) {
           return;
@@ -34,6 +38,32 @@ const PatientDetail = () => {
     };
     void getPatient();
   });
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          values
+      );
+      dispatch(addEntry(newEntry));
+      closeModal();
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        setError(String(e?.response?.data?.error) || "Unrecognized axios error");
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
 
   const genderIcon = (gender: Gender) => {
     switch (gender) {
@@ -77,6 +107,15 @@ const PatientDetail = () => {
     <Typography>SSN: {selectedPatient.ssn}</Typography>
     <Typography>Occupation: {selectedPatient.occupation}</Typography>
     {entryList(selectedPatient.entries)}
+    <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+        error={error}
+    />
+    <Button variant="contained" onClick={() => openModal()}>
+      Add New Entry
+    </Button>
   </Box>;
 };
 
