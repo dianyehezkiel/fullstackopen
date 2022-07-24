@@ -9,8 +9,8 @@ import { apiBaseUrl } from "../constants";
 import {addEntry, selectPatient, useStateValue} from "../state";
 import { Entry, Patient, Gender } from "../types";
 import EntryDetail from "../components/EntryDetail";
-import AddEntryModal from "../addEntryModal";
-import {EntryFormValues} from "../addEntryModal/addEntryForm";
+import AddEntryModal from "../AddEntryModal";
+import {EntryFormValues} from "../AddEntryModal/AddEntryForm";
 
 const PatientDetail = () => {
   const [{ selectedPatient }, dispatch] = useStateValue();
@@ -57,7 +57,7 @@ const PatientDetail = () => {
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         console.error(e?.response?.data || "Unrecognized axios error");
-        setError(String(e?.response?.data?.error) || "Unrecognized axios error");
+        setError(String(e?.response?.data) || "Unrecognized axios error");
       } else {
         console.error("Unknown error", e);
         setError("Unknown error");

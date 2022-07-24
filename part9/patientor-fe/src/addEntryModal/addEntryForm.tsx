@@ -3,7 +3,7 @@ import {useStateValue} from "../state";
 import {Field, Form, Formik} from "formik";
 import {DiagnosisSelection, TextField} from "../AddPatientModal/FormField";
 import {Button, Grid, Typography} from "@material-ui/core";
-import React from "react";
+import * as Yup from 'yup';
 
 type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
 export type EntryFormValues = UnionOmit<Entry, 'id'>;
@@ -30,30 +30,27 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 },
             }}
             onSubmit={onSubmit}
-            validate={(values) => {
-                const requiredError = "Field is required";
-                const errors: { [field: string]: string } = {};
-                if (!values.type) {
-                    errors.name = requiredError;
-                }
-                if (!values.description) {
-                    errors.name = requiredError;
-                }
-                if (!values.date) {
-                    errors.name = requiredError;
-                }
-                if (!values.specialist) {
-                    errors.name = requiredError;
-                }
-                if (values.type === "Hospital") {
-                    if(!values.discharge.date) {
-                        errors.name = requiredError;
-                    }
-                    if(!values.discharge.criteria) {
-                        errors.name = requiredError;
-                    }
-                }
-            }}
+            validationSchema={
+              Yup.object().shape({
+                description: Yup.string().required('Description is required'),
+                date: Yup.string()
+                  .required('Entry date is required')
+                  .matches(
+                      /(?:19\d{2}|20\d{2})-(0[1-9]|1[012])-(0[1-9]|[12]\d|3[01])\b/,
+                    'Please use YYYY-MM-DD format'
+                  ),
+                specialist: Yup.string().required('Specialist name is required'),
+                discharge: Yup.object().shape({
+                  date: Yup.string()
+                    .required('Discharge date is required')
+                    .matches(
+                      /(?:19\d{2}|20\d{2})-(0[1-9]|1[012])-(0[1-9]|[12]\d|3[01])\b/,
+                      'Please use YYYY-MM-DD format'
+                    ),
+                  criteria: Yup.string().required('Discharge criteria is required'),
+                })
+              })
+            }
         >
             {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
                 return (
