@@ -157,7 +157,7 @@ export const toNewEntry = (entry: EntryFormFields): NewEntry => {
   switch (entry.type) {
     case 'Hospital':
       return toNewHospitalEntry(entry);
-    case 'OccupationalHealthcareEntry':
+    case 'OccupationalHealthcare':
       return toNewOccupationalHealthcareEntry(entry);
     case 'HealthCheck':
       return toNewHealthCheckEntry(entry);
