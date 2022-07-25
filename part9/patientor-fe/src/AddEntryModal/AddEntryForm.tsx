@@ -1,7 +1,7 @@
-import { Entry } from "../types";
+import { Entry, HealthCheckRating } from "../types";
 import { useStateValue } from "../state";
 import { Field, Form, Formik } from "formik";
-import { DiagnosisSelection, EntryTypeOption, SelectField, TextField } from "../AddPatientModal/FormField";
+import { DiagnosisSelection, EntryTypeOption, HealthCheckRatingOption, SelectField, TextField } from "../AddPatientModal/FormField";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import * as Yup from 'yup';
 
@@ -16,6 +16,14 @@ interface Props {
 const entryTypeOptions: EntryTypeOption[] = [
   { value: "Hospital", label: "Hospital" },
   { value: "OccupationalHealthcare", label: "Occupational Healthcare" },
+  { value: "HealthCheck", label: "Health Check" }
+];
+
+const healthCheckRatingOptions: HealthCheckRatingOption[] = [
+  { value: HealthCheckRating.Healthy, label: "Healthy" },
+  { value: HealthCheckRating.LowRisk, label: "Low Risk" },
+  { value: HealthCheckRating.HighRisk, label: "High Risk" },
+  { value: HealthCheckRating.CriticalRisk, label: "Critical Risk" },
 ];
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
@@ -38,6 +46,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
           startDate: "",
           endDate: ""
         },
+        healthCheckRating: HealthCheckRating.Healthy,
       }}
       onSubmit={onSubmit}
       validationSchema={
@@ -71,7 +80,6 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
             then: Yup.string().required('Employer name is required'),
             otherwise: Yup.string().nullable(),
           }),
-
           sickLeave: Yup.object().when('type', {
             is: (val: string) => val === 'OccupationalHealthcare',
             then: Yup.object().shape({
@@ -101,6 +109,11 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               endDate: Yup.string().nullable(),
             }),
           }),
+          healthCheckRating: Yup.number().when('type', {
+            is: (val: string) => val === 'HealthCheck',
+            then: Yup.number().min(0).required('Health Rating is required'),
+            otherwise: Yup.number().nullable(),
+          }),
         })
       }
     >
@@ -125,6 +138,17 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
             "display": "none",
           };
         };
+        const showIfHealthCheckType = () => {
+          if (values.type === "HealthCheck") {
+            return {
+              "display": "block",
+            };
+          }
+          return {
+            "display": "none",
+          };
+        };
+
         return (
           <Form className="form ui">
             <Typography variant="button">General Information</Typography>
@@ -186,6 +210,9 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               name="sickLeave.endDate"
               component={TextField}
               />
+            </Box>
+            <Box style={showIfHealthCheckType()}>
+              <SelectField label="Health Rating" name="healthCheckRating" options={healthCheckRatingOptions} />
             </Box>
             <Grid>
               <Grid item>
