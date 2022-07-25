@@ -36,7 +36,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         description: "",
         date: "",
         specialist: "",
-        diagnosisCodes: [],
+        diagnosisCodes: undefined,
         discharge: {
           date: "",
           criteria: "",

@@ -18,7 +18,7 @@ const HealthCheckEntry = ({ entry }: HealthCheckEntryProps) => {
 
     return (
       <>
-        diagnoses:
+        <Typography>diagnoses:</Typography>
         <ul style={{ marginTop: "4px", marginBottom: "4px" }}>
           {entry.diagnosisCodes.map((code) => {
             return (
@@ -35,13 +35,13 @@ const HealthCheckEntry = ({ entry }: HealthCheckEntryProps) => {
   const healthRateIcon = () => {
     switch (entry.healthCheckRating) {
       case 0:
-        return <FavoriteIcon color="error" />;
-      case 1:
-        return <FavoriteIcon color="warning" />;
-      case 2:
-        return <FavoriteIcon color="info" />;
-      case 3:
         return <FavoriteIcon color="success" />;
+      case 1:
+        return <FavoriteIcon color="info" />;
+      case 2:
+        return <FavoriteIcon color="warning" />;
+      case 3:
+        return <FavoriteIcon color="error" />;
       default:
         return null;
     }

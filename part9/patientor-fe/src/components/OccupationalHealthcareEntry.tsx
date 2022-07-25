@@ -17,7 +17,7 @@ const OccupationalHealthcareEntry = ({ entry }: OccupationalHealthcareEntryProps
 
     return (
       <>
-        diagnoses:
+        <Typography>diagnoses:</Typography>
         <ul style={{ marginTop: "4px", marginBottom: "4px" }}>
           {entry.diagnosisCodes.map((code) => {
             return (
